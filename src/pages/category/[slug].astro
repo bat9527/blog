@@ -1,12 +1,33 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Sidebar from '../components/Sidebar.astro';
-import ArticleCard from '../components/ArticleCard.astro';
-import RightPanel from '../components/RightPanel.astro';
+import Layout from '../../layouts/Layout.astro';
+import Sidebar from '../../components/Sidebar.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import RightPanel from '../../components/RightPanel.astro';
 import { getCollection } from 'astro:content';
 
+export async function getStaticPaths() {
+  const categories = [
+    { slug: 'tech', name: '科技' },
+    { slug: 'investment', name: '投资' },
+    { slug: 'economy', name: '经济' },
+    { slug: 'humanities', name: '人文' },
+    { slug: 'original', name: '原创' },
+    { slug: 'others', name: '其他' },
+  ];
+
+  return categories.map(category => ({
+    params: { slug: category.slug },
+    props: { categoryName: category.name },
+  }));
+}
+
+const { categoryName } = Astro.props;
+const { slug } = Astro.params;
+
 const allPosts = await getCollection('blog');
-const sortedPosts = allPosts.sort((a, b) => {
+const filteredPosts = allPosts.filter(post => post.data.category === categoryName);
+
+const sortedPosts = filteredPosts.sort((a, b) => {
   // Sort by featured first, then by claps
   if (a.data.featured && !b.data.featured) return -1;
   if (!a.data.featured && b.data.featured) return 1;
@@ -23,14 +44,13 @@ const categories = [
 ];
 ---
 
-<Layout title="Medium Clone - Home">
+<Layout title={`Medium Clone - ${categoryName}`}>
   <div class="flex min-h-screen bg-white overflow-x-hidden">
     <Sidebar activeTab="home" />
     
     <main class="flex-1 border-r border-gray-100 min-h-screen relative overflow-x-hidden">
       <div class="w-full md:max-w-[720px] mx-auto pt-6 md:pt-10 min-h-screen pb-20">
 
-        
         <!-- Mobile Header -->
         <div class="md:hidden flex items-center justify-between mb-4 px-4">
           <div class="font-serif font-bold text-2xl tracking-tight">Medium</div>
@@ -47,18 +67,24 @@ const categories = [
           <div class="flex items-center gap-6 md:gap-8 min-w-max">
             <a 
               href={`${import.meta.env.BASE_URL}/`}
-              class="py-3 md:py-4 text-sm font-medium text-gray-900 relative whitespace-nowrap"
+              class="py-3 md:py-4 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors relative whitespace-nowrap"
             >
               全部
-              <div class="absolute bottom-0 left-0 w-full h-[1px] bg-gray-900"></div>
             </a>
             
-            {categories.map(category => (
+            {categories.map(cat => (
               <a 
-                href={`${import.meta.env.BASE_URL}/category/${category.slug}`}
-                class="py-3 md:py-4 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors relative whitespace-nowrap"
+                href={`${import.meta.env.BASE_URL}/category/${cat.slug}`}
+                class={`py-3 md:py-4 text-sm font-medium relative whitespace-nowrap transition-colors ${
+                  slug === cat.slug 
+                    ? 'text-gray-900' 
+                    : 'text-gray-500 hover:text-gray-900'
+                }`}
               >
-                {category.name}
+                {cat.name}
+                {slug === cat.slug && (
+                  <div class="absolute bottom-0 left-0 w-full h-[1px] bg-gray-900"></div>
+                )}
               </a>
             ))}
           </div>
@@ -66,22 +92,30 @@ const categories = [
 
         <!-- Feed List -->
         <div class="mt-2 px-4 md:px-0">
-          {sortedPosts.map(post => (
-            <ArticleCard 
-              id={post.slug}
-              title={post.data.title}
-              subtitle={post.data.subtitle}
-              publishedAt={post.data.publishedAt}
-              readTime={post.data.readTime}
-              tags={post.data.tags}
+          {sortedPosts.length > 0 ? (
+            sortedPosts.map(post => (
+              <ArticleCard 
+                id={post.slug}
+                title={post.data.title}
+                subtitle={post.data.subtitle}
+                publishedAt={post.data.publishedAt}
+                readTime={post.data.readTime}
+                tags={post.data.tags}
 
-              thumbnailUrl={post.data.thumbnailUrl}
-            />
-          ))}
+                thumbnailUrl={post.data.thumbnailUrl}
+              />
+            ))
+          ) : (
+             <div class="py-20 text-center text-gray-500">
+                <p>暂无相关文章</p>
+             </div>
+          )}
           
-          <div class="py-10 text-center text-gray-500 text-sm">
-            You're all caught up.
-          </div>
+          {sortedPosts.length > 0 && (
+            <div class="py-10 text-center text-gray-500 text-sm">
+              You're all caught up.
+            </div>
+          )}
         </div>
 
         <!-- Mobile Create Button -->
