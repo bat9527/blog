@@ -2,11 +2,11 @@ import { defineConfig } from 'astro/config';
 import tailwind from "@astrojs/tailwind";
 
 export default defineConfig({
-  // 1. 你的 GitHub Pages 根域名 (现在是自定义域名)
-  site: 'https://andywli.cn',
+  // 1. 临时回退到 GitHub Pages (等待新域名审核)
+  site: 'https://bat9527.github.io',
 
-  // 2. 自定义域名通常映射到根目录，所以 base 设为 '/'
-  base: '/',
+  // 2. 恢复子路径配置
+  base: '/blog',
 
   integrations: [tailwind()],
 });

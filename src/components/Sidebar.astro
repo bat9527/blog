@@ -31,7 +31,7 @@ const { activeTab = 'home' } = Astro.props;
   
   <div class="mt-auto p-6 border-t border-gray-100">
     <div class="flex items-center gap-3">
-      <img src={`${import.meta.env.BASE_URL}images/avatar.jpg`} class="w-8 h-8 rounded-full" alt="User" />
+      <img src={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/images/avatar.jpg`} class="w-8 h-8 rounded-full" alt="User" />
       <div class="flex-1 min-w-0">
         <div class="text-sm font-medium text-gray-900 truncate">Andy</div>
         <div class="text-xs text-gray-500 truncate">@andywli</div>

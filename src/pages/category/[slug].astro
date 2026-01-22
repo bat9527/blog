@@ -58,7 +58,7 @@ const categories = [
             <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
-            <img src={`${import.meta.env.BASE_URL}images/avatar.jpg`} class="w-8 h-8 rounded-full" alt="User" />
+            <img src={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/images/avatar.jpg`} class="w-8 h-8 rounded-full" alt="User" />
           </div>
         </div>
 
@@ -74,7 +74,7 @@ const categories = [
             
             {categories.map(cat => (
               <a 
-                href={`${import.meta.env.BASE_URL}category/${cat.slug}`}
+                href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/category/${cat.slug}`}
                 class={`py-3 md:py-4 text-sm font-medium relative whitespace-nowrap transition-colors ${
                   slug === cat.slug 
                     ? 'text-gray-900' 
