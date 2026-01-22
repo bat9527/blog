@@ -2,11 +2,11 @@ import { defineConfig } from 'astro/config';
 import tailwind from "@astrojs/tailwind";
 
 export default defineConfig({
-  // 1. 临时回退到 GitHub Pages (等待新域名审核)
-  site: 'https://bat9527.github.io',
+  // 1. 自定义域名配置
+  site: 'https://andywli.cn',
 
-  // 2. 恢复子路径配置
-  base: '/blog',
+  // 2. 根目录部署
+  base: '/',
 
   integrations: [tailwind()],
 });

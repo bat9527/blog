@@ -141,48 +141,6 @@ declare module 'astro:content' {
 
 	type ContentEntryMap = {
 		"blog": {
-"ai-bubble.md": {
-	id: "ai-bubble.md";
-  slug: "ai-bubble";
-  body: string;
-  collection: "blog";
-  data: InferEntrySchema<"blog">
-} & { render(): Render[".md"] };
-"mental-reset.md": {
-	id: "mental-reset.md";
-  slug: "mental-reset";
-  body: string;
-  collection: "blog";
-  data: InferEntrySchema<"blog">
-} & { render(): Render[".md"] };
-"react-19.md": {
-	id: "react-19.md";
-  slug: "react-19";
-  body: string;
-  collection: "blog";
-  data: InferEntrySchema<"blog">
-} & { render(): Render[".md"] };
-"saas-failure.md": {
-	id: "saas-failure.md";
-  slug: "saas-failure";
-  body: string;
-  collection: "blog";
-  data: InferEntrySchema<"blog">
-} & { render(): Render[".md"] };
-"template-demo.md": {
-	id: "template-demo.md";
-  slug: "template-demo";
-  body: string;
-  collection: "blog";
-  data: InferEntrySchema<"blog">
-} & { render(): Render[".md"] };
-"transformers-easy.md": {
-	id: "transformers-easy.md";
-  slug: "transformers-easy";
-  body: string;
-  collection: "blog";
-  data: InferEntrySchema<"blog">
-} & { render(): Render[".md"] };
 "如何用一天时间，彻底重启你的人生.md": {
 	id: "如何用一天时间，彻底重启你的人生.md";
   slug: "如何用一天时间彻底重启你的人生";

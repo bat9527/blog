@@ -52,11 +52,22 @@ git push origin main
 
 推送成功后，GitHub Actions 会自动触发构建并部署到 GitHub Pages。
 
-## 部署说明 (GitHub Pages)
+## 部署说明 (GitHub Pages + 自定义域名)
 
-本项目配置为使用 GitHub Actions 自动部署到 GitHub Pages。
+本项目配置为使用 GitHub Actions 自动部署到 GitHub Pages，并已启用自定义域名 `andywli.cn`。
 
-- **配置**: `astro.config.mjs` 中已经配置了 `site` 和 `base` 路径。
-- **注意事项**: 如果部署到子路径 (如 `/blog/`)，请确保在代码中引用 `public` 目录下的资源时使用 `${import.meta.env.BASE_URL}` 前缀，或者通过 Astro 的图像优化功能自动处理。
+### 配置状态
+- **`astro.config.mjs`**:
+  - `site`: 'https://andywli.cn'
+  - `base`: '/'
+- **`public/CNAME`**: 内容为 `andywli.cn`
+- **GitHub 设置**:
+  - Settings > Pages > Custom domain 已设置为 `andywli.cn`。
+  - DNS 解析已生效 (A记录 + CNAME)。
+
+### 每次推送代码
+只需正常 `git push origin main`。
+- 如果部署后 404，请检查 Repository Settings 里的 Custom Domain 是否被重置（有时 CNAME 文件丢失会导致重置，但代码库里有 `public/CNAME` 应该没问题）。
+
 
 
