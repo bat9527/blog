@@ -4,8 +4,8 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Inter', 'sans-serif'],
-                serif: ['Merriweather', 'Georgia', 'serif'],
+                sans: ['Inter', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'sans-serif'],
+                serif: ['Merriweather', 'Noto Serif SC', 'Songti SC', 'serif'],
             },
             colors: {
                 brand: {
