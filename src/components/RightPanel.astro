@@ -1,0 +1,60 @@
+---
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog');
+const popularPosts = allPosts
+  .sort((a, b) => b.data.claps - a.data.claps)
+  .slice(0, 3);
+
+const topics = [
+  { id: '1', name: 'Coding' },
+  { id: '2', name: 'AI' },
+  { id: '3', name: 'Life' },
+  { id: '4', name: 'Mental Health' },
+  { id: '5', name: 'Startups' },
+];
+---
+
+<aside class="hidden lg:block w-[340px] p-8 sticky top-0 h-screen overflow-y-auto no-scrollbar">
+  <div class="mb-8">
+    <h3 class="text-sm font-bold text-gray-900 mb-4">Recommended topics</h3>
+    <div class="flex flex-wrap gap-2">
+      {topics.map(topic => (
+        <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors">
+          {topic.name}
+        </button>
+      ))}
+    </div>
+  </div>
+  
+  <div>
+    <h3 class="text-sm font-bold text-gray-900 mb-4">Popular on Medium</h3>
+    <div class="space-y-4">
+      {popularPosts.map((post, index) => (
+        <a href={`/blog/${post.slug}`} class="flex gap-4 group">
+          <span class="text-2xl font-bold text-gray-200 group-hover:text-gray-300 transition-colors">
+            0{index + 1}
+          </span>
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1">
+              <img src="/images/avatar.jpg" class="w-4 h-4 rounded-full" alt="Author" />
+              <span class="text-xs text-gray-600">Written by Me</span>
+            </div>
+            <h4 class="text-sm font-bold text-gray-900 group-hover:text-gray-700 transition-colors line-clamp-2">
+              {post.data.title}
+            </h4>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+  
+  <div class="mt-8 pt-8 border-t border-gray-100">
+    <div class="flex flex-wrap gap-3 text-xs text-gray-500">
+      <a href="#" class="hover:text-gray-900">Help</a>
+      <a href="#" class="hover:text-gray-900">About</a>
+      <a href="#" class="hover:text-gray-900">Terms</a>
+      <a href="#" class="hover:text-gray-900">Privacy</a>
+    </div>
+  </div>
+</aside>

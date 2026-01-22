@@ -1,0 +1,52 @@
+---
+interface Props {
+  title?: string;
+}
+
+const { title = 'Medium Clone' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300&display=swap" rel="stylesheet">
+    <style is:global>
+      body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.05);
+        overflow-x: hidden;
+      }
+      html {
+        overflow-x: hidden;
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      /* Better touch targets for mobile */
+      @media (max-width: 768px) {
+        a, button {
+          min-height: 44px;
+          min-width: 44px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
