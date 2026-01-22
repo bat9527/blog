@@ -21,24 +21,25 @@ View your app in AI Studio: https://ai.studio/apps/drive/1PnHQWdASKcNaw93exF382r
 
 ## Deployment to GitHub Pages
 
-This project is configured to automatically deploy to GitHub Pages using GitHub Actions.
+This project is configured to automatically deploy to GitHub Pages (specifically to a subpath like `/blog/`) using GitHub Actions.
 
 ### Setup Steps:
 
-1. **Create a GitHub Repository**: Create a new repository on GitHub named `andywli.cn`.
-2. **Push to GitHub**:
+1. **GitHub Repository**: Ensure your repository is named `blog`.
+2. **Astro Configuration**: The `astro.config.mjs` is already set with:
+   - `site: 'https://bat9527.github.io'`
+   - `base: '/blog'`
+3. **Push to GitHub**:
    ```bash
-   git init
    git add .
-   git commit -m "Initial commit"
-   git remote add origin https://github.com/your-username/andywli.cn.git
-   git branch -M main
-   git push -u origin main
+   git commit -m "Fix subpath deployment paths"
+   git push origin main
    ```
-3. **Configure GitHub Pages**:
+4. **Configure GitHub Pages**:
    - Go to your repository **Settings** > **Pages**.
    - Under **Build and deployment** > **Source**, select **GitHub Actions**.
-4. **Custom Domain**:
-   - Ensure your domain `andywli.cn` is configured to point to GitHub Pages IP addresses.
-   - GitHub will automatically use the `public/CNAME` file.
+
+### Important Note on Paths:
+When deploying to a subpath, all internal links and images from the `public` folder must be prefixed with `${import.meta.env.BASE_URL}`. This has been applied to the current codebase.
+
 

@@ -15,11 +15,11 @@ const { id, title, subtitle, publishedAt, readTime, tags, thumbnailUrl, claps, c
 ---
 
 <article class="py-6 md:py-8 border-b border-gray-100 cursor-pointer hover:bg-gray-50/50 transition-colors -mx-4 px-4 md:mx-0 md:px-0">
-  <a href={`/blog/${id}`} class="block">
+  <a href={`${import.meta.env.BASE_URL}/blog/${id}`} class="block">
     <div class="flex gap-4 md:gap-6">
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2 mb-2 md:mb-3">
-          <img src="/images/avatar.jpg" class="w-5 h-5 rounded-full" alt="Author" />
+          <img src={`${import.meta.env.BASE_URL}/images/avatar.jpg`} class="w-5 h-5 rounded-full" alt="Author" />
           <span class="text-xs text-gray-600">Written by Me</span>
           <span class="text-xs text-gray-400">·</span>
           <span class="text-xs text-gray-500">{publishedAt}</span>
