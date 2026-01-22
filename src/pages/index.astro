@@ -38,7 +38,7 @@ const categories = [
             <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
-            <img src={`${import.meta.env.BASE_URL}/images/avatar.jpg`} class="w-8 h-8 rounded-full" alt="User" />
+            <img src={`${import.meta.env.BASE_URL}images/avatar.jpg`} class="w-8 h-8 rounded-full" alt="User" />
           </div>
         </div>
 
@@ -46,7 +46,7 @@ const categories = [
         <div class="sticky top-0 bg-white/95 backdrop-blur-sm z-10 border-b border-gray-100 px-4 md:px-0 overflow-x-auto no-scrollbar">
           <div class="flex items-center gap-6 md:gap-8 min-w-max">
             <a 
-              href={`${import.meta.env.BASE_URL}/`}
+              href={`${import.meta.env.BASE_URL}`}
               class="py-3 md:py-4 text-sm font-medium text-gray-900 relative whitespace-nowrap"
             >
               全部
@@ -55,7 +55,7 @@ const categories = [
             
             {categories.map(category => (
               <a 
-                href={`${import.meta.env.BASE_URL}/category/${category.slug}`}
+                href={`${import.meta.env.BASE_URL}category/${category.slug}`}
                 class="py-3 md:py-4 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors relative whitespace-nowrap"
               >
                 {category.name}

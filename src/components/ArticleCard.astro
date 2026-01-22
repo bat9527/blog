@@ -13,7 +13,7 @@ const { id, title, subtitle, publishedAt, readTime, tags, thumbnailUrl } = Astro
 ---
 
 <article class="py-6 md:py-8 border-b border-gray-100 cursor-pointer hover:bg-gray-50/50 transition-colors -mx-4 px-4 md:mx-0 md:px-0">
-  <a href={`${import.meta.env.BASE_URL}/blog/${id}`} class="block">
+  <a href={`${import.meta.env.BASE_URL}blog/${id}`} class="block">
     <div class="flex gap-4 md:gap-6">
       <div class="flex-1 min-w-0">
         <h2 class="text-lg md:text-xl lg:text-2xl font-bold text-gray-900 mb-1.5 md:mb-2 leading-tight font-serif line-clamp-2">

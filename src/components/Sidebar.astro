@@ -8,7 +8,7 @@ const { activeTab = 'home' } = Astro.props;
     
     <nav class="space-y-1">
       <a 
-        href={`${import.meta.env.BASE_URL}/`} 
+        href={`${import.meta.env.BASE_URL}`} 
         class={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${activeTab === 'home' ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50'}`}
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -31,7 +31,7 @@ const { activeTab = 'home' } = Astro.props;
   
   <div class="mt-auto p-6 border-t border-gray-100">
     <div class="flex items-center gap-3">
-      <img src={`${import.meta.env.BASE_URL}/images/avatar.jpg`} class="w-8 h-8 rounded-full" alt="User" />
+      <img src={`${import.meta.env.BASE_URL}images/avatar.jpg`} class="w-8 h-8 rounded-full" alt="User" />
       <div class="flex-1 min-w-0">
         <div class="text-sm font-medium text-gray-900 truncate">Andy</div>
         <div class="text-xs text-gray-500 truncate">@andywli</div>
