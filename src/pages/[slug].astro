@@ -16,7 +16,7 @@ const { Content } = await entry.render();
 const post = entry.data;
 ---
 
-<Layout title={`${post.title} - Medium Clone`}>
+<Layout title={`${post.title} - Andy Blog`}>
   <div class="flex min-h-screen bg-white overflow-x-hidden">
     <Sidebar />
     
@@ -75,7 +75,7 @@ const post = entry.data;
         
         <!-- Footer Tags -->
         <div class="flex gap-2 mb-8 md:mb-10 flex-wrap">
-          {post.tags.map((tag: string) => (
+          {post.tags.slice(0, 3).map((tag: string) => (
             <span class="px-3 py-1 bg-gray-100 text-sm text-gray-600 rounded-full">#{tag}</span>
           ))}
         </div>
