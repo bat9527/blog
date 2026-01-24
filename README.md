@@ -44,7 +44,7 @@
 git add .
 
 # 2. 提交修改 (请将引号内的内容替换为实际的修改描述)
-git commit -m "更新内容: 添加了新文章/修改了样式"
+git commit -m "update content"
 
 # 3. 推送到远程仓库 (默认推送到 main 分支)
 git push origin main
