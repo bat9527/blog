@@ -1,0 +1,25 @@
+---
+const { headings } = Astro.props;
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+---
+
+<aside class="hidden xl:flex flex-col w-[320px] fixed top-0 right-0 h-screen border-l border-gray-100 bg-white z-10 overflow-y-auto">
+  <div class="p-6">
+    <h3 class="font-serif font-bold text-gray-900 mb-4 px-3">On this page</h3>
+    <nav class="flex flex-col space-y-1">
+      {headings.map((heading: Heading) => (
+        <a 
+          href={`#${heading.slug}`}
+          class={`block px-3 py-1.5 text-sm transition-colors rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-50 ${heading.depth === 2 ? '' : 'pl-6'}`}
+        >
+          {heading.text}
+        </a>
+      ))}
+    </nav>
+  </div>
+</aside>

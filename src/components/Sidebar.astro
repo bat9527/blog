@@ -2,7 +2,7 @@
 const { activeTab = 'home' } = Astro.props;
 ---
 
-<aside class="hidden md:flex flex-col w-[240px] border-r border-gray-100 min-h-screen sticky top-0 bg-white">
+<aside class="hidden md:flex flex-col w-[280px] border-r border-gray-100 h-screen fixed top-0 left-0 bg-white z-10">
   <div class="p-6 pb-2">
     <div class="flex items-center gap-3 mb-8">
       <img src={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/images/avatar.jpg`} class="w-10 h-10 rounded-full" alt="User" />

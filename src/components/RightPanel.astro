@@ -6,13 +6,23 @@ const popularPosts = allPosts
   .sort((a, b) => b.data.claps - a.data.claps)
   .slice(0, 3);
 
-const topics = [
-  { id: '1', name: 'Coding' },
-  { id: '2', name: 'AI' },
-  { id: '3', name: 'Life' },
-  { id: '4', name: 'Mental Health' },
-  { id: '5', name: 'Startups' },
-];
+// Get all tags and count their occurrences
+const allTags = allPosts.flatMap(post => post.data.tags);
+const tagCounts = allTags.reduce((acc, tag) => {
+  acc[tag] = (acc[tag] || 0) + 1;
+  return acc;
+}, {} as Record<string, number>);
+
+// Sort tags by count (descending) and take top 10
+const sortedTags = Object.entries(tagCounts)
+  .sort(([, a], [, b]) => b - a)
+  .slice(0, 30)
+  .map(([name]) => name);
+
+const topics = sortedTags.map((tag, index) => ({
+  id: String(index + 1),
+  name: tag
+}));
 ---
 
 <aside class="hidden lg:block w-[340px] p-8 sticky top-0 h-screen overflow-y-auto no-scrollbar">
@@ -20,9 +30,12 @@ const topics = [
     <h3 class="text-sm font-bold text-gray-900 mb-4">Recommended topics</h3>
     <div class="flex flex-wrap gap-2">
       {topics.map(topic => (
-        <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors">
+        <a 
+          href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/tag/${topic.name}`}
+          class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors"
+        >
           {topic.name}
-        </button>
+        </a>
       ))}
     </div>
   </div>

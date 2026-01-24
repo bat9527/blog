@@ -6,27 +6,20 @@ import RightPanel from '../../components/RightPanel.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
-  const categories = [
-    { slug: 'tech', name: '科技' },
-    { slug: 'investment', name: '投资' },
-    { slug: 'economy', name: '经济' },
-    { slug: 'humanities', name: '人文' },
-    { slug: 'english', name: '英语' },
-    { slug: 'original', name: '原创' },
-    { slug: 'others', name: '其他' },
-  ];
+  const allPosts = await getCollection('blog');
+  const allTags = [...new Set(allPosts.flatMap(post => post.data.tags))];
 
-  return categories.map(category => ({
-    params: { slug: category.slug },
-    props: { categoryName: category.name },
+  return allTags.map(tag => ({
+    params: { tag },
+    props: { tagName: tag },
   }));
 }
 
-const { categoryName } = Astro.props;
-const { slug } = Astro.params;
+const { tagName } = Astro.props;
+const { tag } = Astro.params;
 
 const allPosts = await getCollection('blog');
-const filteredPosts = allPosts.filter(post => post.data.category === categoryName);
+const filteredPosts = allPosts.filter(post => post.data.tags.includes(tagName));
 
 const sortedPosts = filteredPosts.sort((a, b) => {
   // Sort by featured first, then by claps
@@ -46,7 +39,7 @@ const categories = [
 ];
 ---
 
-<Layout title={`Andy Blog - ${categoryName}`}>
+<Layout title={`Andy Blog - Tag: ${tagName}`}>
 <div class="flex min-h-screen bg-white overflow-x-hidden md:h-screen md:overflow-hidden">
     <Sidebar activeTab="home" />
     
@@ -64,9 +57,20 @@ const categories = [
           </div>
         </div>
 
-        <!-- Category Tabs -->
-        <div class="sticky top-0 bg-white/95 backdrop-blur-sm z-10 border-b border-gray-100 px-4 md:px-0 overflow-x-auto no-scrollbar">
-          <div class="flex items-center gap-6 md:gap-8 min-w-max">
+        <!-- Tag Header -->
+        <div class="px-4 md:px-0 mb-6">
+          <div class="flex items-center gap-2 text-sm text-gray-500 mb-2">
+            <a href={import.meta.env.BASE_URL} class="hover:text-gray-900 transition-colors">Home</a>
+            <span>/</span>
+            <span class="text-gray-900">Tag</span>
+          </div>
+          <h1 class="text-3xl font-bold text-gray-900">#{tagName}</h1>
+          <p class="text-gray-500 mt-2">{filteredPosts.length} article{filteredPosts.length !== 1 ? 's' : ''}</p>
+        </div>
+
+        <!-- Category Tabs (Optional: Could redirect to home or keep context) -->
+        <div class="sticky top-0 bg-white/95 backdrop-blur-sm z-10 border-b border-gray-100 px-4 md:px-0 overflow-x-auto no-scrollbar mb-6">
+           <div class="flex items-center gap-6 md:gap-8 min-w-max">
             <a 
               href={`${import.meta.env.BASE_URL}`}
               class="py-3 md:py-4 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors relative whitespace-nowrap"
@@ -77,16 +81,9 @@ const categories = [
             {categories.map(cat => (
               <a 
                 href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/category/${cat.slug}`}
-                class={`py-3 md:py-4 text-sm font-medium relative whitespace-nowrap transition-colors ${
-                  slug === cat.slug 
-                    ? 'text-gray-900' 
-                    : 'text-gray-500 hover:text-gray-900'
-                }`}
+                class="py-3 md:py-4 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors relative whitespace-nowrap"
               >
                 {cat.name}
-                {slug === cat.slug && (
-                  <div class="absolute bottom-0 left-0 w-full h-[1px] bg-gray-900"></div>
-                )}
               </a>
             ))}
           </div>
@@ -103,13 +100,12 @@ const categories = [
                 publishedAt={post.data.publishedAt}
                 readTime={post.data.readTime}
                 tags={post.data.tags}
-
                 thumbnailUrl={post.data.thumbnailUrl}
               />
             ))
           ) : (
              <div class="py-20 text-center text-gray-500">
-                <p>暂无相关文章</p>
+                <p>No articles found with this tag.</p>
              </div>
           )}
           

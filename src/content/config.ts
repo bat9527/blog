@@ -9,7 +9,7 @@ const blog = defineCollection({
         readTime: z.string(),
         tags: z.array(z.string()),
         thumbnailUrl: z.string(),
-        category: z.enum(['科技', '投资', '经济', '人文', '原创', '其他']).default('其他'),
+        category: z.enum(['科技', '投资', '经济', '人文', '英语', '原创', '其他']).default('其他'),
         claps: z.number().default(0),
         comments: z.number().default(0),
         featured: z.boolean().optional(),

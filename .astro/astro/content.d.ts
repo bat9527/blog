@@ -141,9 +141,51 @@ declare module 'astro:content' {
 
 	type ContentEntryMap = {
 		"blog": {
+"english-home.md": {
+	id: "english-home.md";
+  slug: "english-home";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"english-office.md": {
+	id: "english-office.md";
+  slug: "english-office";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"english-programmer.md": {
+	id: "english-programmer.md";
+  slug: "english-programmer";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"nine-traps-jin-yong.md": {
+	id: "nine-traps-jin-yong.md";
+  slug: "nine-traps-jin-yong";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"observing-people.md": {
+	id: "observing-people.md";
+  slug: "observing-people";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
 "reset-your-life.md": {
 	id: "reset-your-life.md";
   slug: "reset-your-life";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"seven-steps-career.md": {
+	id: "seven-steps-career.md";
+  slug: "seven-steps-career";
   body: string;
   collection: "blog";
   data: InferEntrySchema<"blog">

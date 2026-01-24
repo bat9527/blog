@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Sidebar from '../components/Sidebar.astro';
+import TableOfContents from '../components/TableOfContents.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -12,16 +13,17 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { Content, headings } = await entry.render();
 const post = entry.data;
 ---
 
 <Layout title={`${post.title} - Andy Blog`}>
   <div class="flex min-h-screen bg-white overflow-x-hidden">
     <Sidebar />
+    <TableOfContents headings={headings} />
     
-    <main class="flex-1 border-r border-gray-100 min-h-screen relative overflow-x-hidden">
-      <div class="w-full md:max-w-3xl mx-auto py-6 md:py-12 px-4 md:px-6 animate-in fade-in duration-500">
+    <main class="flex-1 min-h-screen relative overflow-x-hidden md:ml-[280px] xl:mr-[320px]">
+      <div class="w-full md:max-w-5xl mx-auto py-6 md:py-12 px-4 md:px-6 animate-in fade-in duration-500">
 
         
         <!-- Article Meta Header -->
