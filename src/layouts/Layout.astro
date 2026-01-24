@@ -31,8 +31,9 @@ const { title = 'Andy Blog' } = Astro.props;
       }
       /* WeChat mobile font-weight fix - only on mobile devices */
       @media (max-width: 768px) {
-        .font-bold,
-        [class*="font-bold"],
+        .font-bold {
+          font-weight: 700 !important;
+        }
         .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
           font-weight: 700 !important;
         }
