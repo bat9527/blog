@@ -29,13 +29,13 @@ const { title = 'Andy Blog' } = Astro.props;
         overflow-x: hidden;
         -webkit-text-size-adjust: 100%;
       }
-      /* WeChat mobile font-weight fix - only on mobile devices */
+      /* WeChat Android WebView fix - use 800 instead of 700 */
       @media (max-width: 768px) {
         .font-bold {
-          font-weight: 700 !important;
+          font-weight: 800 !important;
         }
         .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
-          font-weight: 700 !important;
+          font-weight: 800 !important;
         }
       }
       .no-scrollbar::-webkit-scrollbar {
