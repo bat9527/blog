@@ -17,7 +17,7 @@ const { Content, headings } = await entry.render();
 const post = entry.data;
 ---
 
-<Layout title={`${post.title} - Andy Blog`}>
+<Layout title={post.title} ogImage={post.thumbnailUrl}>
   <div class="flex min-h-screen bg-white overflow-x-hidden">
     <Sidebar />
     <TableOfContents headings={headings} />
