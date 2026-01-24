@@ -1,4 +1,4 @@
-# AndyWLi.cn Blog
+# andywli.cn Blog
 
 这个项目是基于 Astro 构建的个人博客网站。
 
