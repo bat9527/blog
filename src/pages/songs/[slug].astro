@@ -1,0 +1,207 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Sidebar from '../../components/Sidebar.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const songEntries = await getCollection('songs');
+  return songEntries.map(entry => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const song = entry.data;
+---
+
+<Layout title={`${song.title} - ${song.artist}`}>
+  <div class="flex min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30 overflow-x-hidden">
+    <Sidebar activeTab="songs" />
+    
+    <main class="flex-1 min-h-screen relative overflow-x-hidden md:ml-[280px]">
+      <div class="w-full max-w-4xl mx-auto py-6 md:py-12 px-4 md:px-6 animate-in">
+        
+        <!-- Back Button -->
+        <div class="mb-6 md:mb-8">
+          <a href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/songs`} 
+             class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-purple-600 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            返回歌曲列表
+          </a>
+        </div>
+
+        <!-- Song Header Card -->
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400 p-6 md:p-8 mb-8 shadow-xl">
+          <!-- Background Pattern -->
+          <div class="absolute inset-0 opacity-10">
+            <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+              <defs>
+                <pattern id="music-pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <circle cx="10" cy="10" r="1.5" fill="white"/>
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#music-pattern)"/>
+            </svg>
+          </div>
+          
+          <div class="relative z-10 text-white">
+            <div class="flex items-start gap-6">
+              <!-- Music Icon -->
+              <div class="hidden md:flex w-24 h-24 rounded-xl bg-white/20 backdrop-blur-sm items-center justify-center flex-shrink-0">
+                <svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                </svg>
+              </div>
+              
+              <div class="flex-1">
+                <h1 class="text-3xl md:text-4xl font-bold mb-2">{song.title}</h1>
+                <p class="text-xl md:text-2xl text-white/90 mb-4">{song.artist}</p>
+                
+                <div class="flex flex-wrap gap-2 mb-4">
+                  {song.tags.map(tag => (
+                    <span class="px-3 py-1 text-sm bg-white/20 backdrop-blur-sm rounded-full">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                
+                <p class="text-sm text-white/70">收录于 {song.publishedAt}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Song Credits -->
+        <div class="bg-white/80 backdrop-blur-sm rounded-xl p-5 md:p-6 mb-6 shadow-sm border border-purple-100/50">
+          <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">歌曲信息</h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+            {song.lyricist && (
+              <div>
+                <span class="text-gray-400">作词</span>
+                <p class="text-gray-800 font-medium">{song.lyricist}</p>
+              </div>
+            )}
+            {song.composer && (
+              <div>
+                <span class="text-gray-400">作曲</span>
+                <p class="text-gray-800 font-medium">{song.composer}</p>
+              </div>
+            )}
+            {song.arranger && (
+              <div>
+                <span class="text-gray-400">编曲</span>
+                <p class="text-gray-800 font-medium">{song.arranger}</p>
+              </div>
+            )}
+            {song.originalArtist && (
+              <div>
+                <span class="text-gray-400">原唱</span>
+                <p class="text-gray-800 font-medium">{song.originalArtist}</p>
+              </div>
+            )}
+            {song.producer && (
+              <div>
+                <span class="text-gray-400">制作人</span>
+                <p class="text-gray-800 font-medium">{song.producer}</p>
+              </div>
+            )}
+          </div>
+          
+          {song.credits && song.credits.length > 0 && (
+            <details class="mt-4 group">
+              <summary class="text-sm text-purple-600 cursor-pointer hover:text-purple-700 transition-colors">
+                查看更多制作信息
+              </summary>
+              <div class="mt-3 pt-3 border-t border-gray-100 grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
+                {song.credits.map(credit => (
+                  <div>
+                    <span class="text-gray-400">{credit.role}</span>
+                    <p class="text-gray-700">{credit.name}</p>
+                  </div>
+                ))}
+              </div>
+            </details>
+          )}
+        </div>
+
+        <!-- Lyrics Card -->
+        <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-6 md:p-10 shadow-lg border border-purple-100/50">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center">
+              <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+              </svg>
+            </div>
+            <h2 class="text-xl font-bold text-gray-800">歌词</h2>
+          </div>
+          
+          <!-- Lyrics Content -->
+          <article class="lyrics-content text-center text-gray-700 leading-loose md:leading-[2.5] text-base md:text-lg font-medium">
+            <Content />
+          </article>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-8 text-center">
+          <p class="text-sm text-gray-400">
+            本作品著作权归原作者所有
+          </p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</Layout>
+
+<style>
+  .animate-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Lyrics styling */
+  .lyrics-content :global(p) {
+    margin-bottom: 1.5rem;
+  }
+  
+  .lyrics-content :global(p:empty) {
+    margin-bottom: 2rem;
+  }
+  
+  /* Add decorative elements to lyrics */
+  .lyrics-content {
+    position: relative;
+  }
+  
+  .lyrics-content::before,
+  .lyrics-content::after {
+    content: '♪';
+    position: absolute;
+    font-size: 1.5rem;
+    color: rgba(168, 85, 247, 0.2);
+  }
+  
+  .lyrics-content::before {
+    top: -0.5rem;
+    left: 0;
+  }
+  
+  .lyrics-content::after {
+    bottom: -0.5rem;
+    right: 0;
+  }
+</style>

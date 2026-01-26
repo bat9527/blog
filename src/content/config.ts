@@ -16,4 +16,25 @@ const blog = defineCollection({
     }),
 });
 
-export const collections = { blog };
+const songs = defineCollection({
+    type: 'content',
+    schema: z.object({
+        title: z.string(),
+        artist: z.string(),
+        lyricist: z.string().optional(),
+        composer: z.string().optional(),
+        arranger: z.string().optional(),
+        originalArtist: z.string().optional(),
+        producer: z.string().optional(),
+        album: z.string().optional(),
+        publishedAt: z.string(),
+        coverUrl: z.string().optional(),
+        tags: z.array(z.string()).default([]),
+        credits: z.array(z.object({
+            role: z.string(),
+            name: z.string(),
+        })).optional(),
+    }),
+});
+
+export const collections = { blog, songs };

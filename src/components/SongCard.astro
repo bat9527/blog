@@ -1,0 +1,62 @@
+---
+interface Props {
+  slug: string;
+  title: string;
+  artist: string;
+  publishedAt: string;
+  tags: string[];
+  coverUrl?: string;
+}
+
+const { slug, title, artist, publishedAt, tags, coverUrl } = Astro.props;
+---
+
+<article class="group cursor-pointer">
+  <a href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/songs/${slug}`} class="block">
+    <div class="relative overflow-hidden rounded-xl bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-orange-500/10 p-4 md:p-5 border border-gray-100 hover:border-purple-200 hover:shadow-lg transition-all duration-300">
+      <div class="flex items-center gap-4">
+        <!-- Cover/Icon -->
+        <div class="relative w-16 h-16 md:w-20 md:h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
+          {coverUrl ? (
+            <img src={coverUrl} alt={title} class="w-full h-full object-cover" />
+          ) : (
+            <svg class="w-8 h-8 md:w-10 md:h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+            </svg>
+          )}
+          <!-- Play overlay -->
+          <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </div>
+        </div>
+        
+        <!-- Info -->
+        <div class="flex-1 min-w-0">
+          <h3 class="text-lg md:text-xl font-bold text-gray-900 truncate group-hover:text-purple-600 transition-colors">
+            {title}
+          </h3>
+          <p class="text-sm md:text-base text-gray-600 mt-0.5 truncate">
+            {artist}
+          </p>
+          <div class="flex items-center gap-2 mt-2 flex-wrap">
+            {tags.slice(0, 2).map(tag => (
+              <span class="px-2 py-0.5 text-xs bg-purple-100 text-purple-600 rounded-full">
+                {tag}
+              </span>
+            ))}
+            <span class="text-xs text-gray-400">{publishedAt}</span>
+          </div>
+        </div>
+        
+        <!-- Arrow -->
+        <div class="hidden md:flex items-center text-gray-300 group-hover:text-purple-400 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </a>
+</article>

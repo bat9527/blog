@@ -1,0 +1,71 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Sidebar from '../../components/Sidebar.astro';
+import SongCard from '../../components/SongCard.astro';
+import RightPanel from '../../components/RightPanel.astro';
+import { getCollection } from 'astro:content';
+
+const allSongs = await getCollection('songs');
+const sortedSongs = allSongs.sort((a, b) => {
+  return new Date(b.data.publishedAt).getTime() - new Date(a.data.publishedAt).getTime();
+});
+---
+
+<Layout title="Songs - Andy Blog">
+  <div class="flex min-h-screen bg-white overflow-x-hidden md:h-screen md:overflow-hidden">
+    <Sidebar activeTab="songs" />
+    
+    <main class="flex-1 border-r border-gray-100 min-h-screen relative overflow-x-hidden md:h-full md:overflow-y-auto md:ml-[280px]">
+      <div class="w-[90%] md:max-w-[720px] mx-auto pt-6 md:pt-10 min-h-screen pb-20">
+        
+        <!-- Mobile Header -->
+        <div class="md:hidden flex items-center justify-between mb-6 px-4">
+          <div class="flex items-center gap-2">
+            <svg class="w-6 h-6 text-purple-500" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+            </svg>
+            <span class="font-serif font-bold text-2xl tracking-tight">Songs</span>
+          </div>
+          <img src={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/images/avatar.jpg`} class="w-8 h-8 rounded-full" alt="User" />
+        </div>
+
+        <!-- Desktop Header -->
+        <div class="hidden md:block mb-8 px-4 md:px-0">
+          <h1 class="text-3xl font-bold text-gray-900 mb-2">🎵 歌词收藏</h1>
+          <p class="text-gray-500">收录喜欢的歌曲，留住美好的旋律</p>
+        </div>
+
+        <!-- Songs Grid -->
+        <div class="space-y-4 px-4 md:px-0">
+          {sortedSongs.length === 0 ? (
+            <div class="text-center py-20">
+              <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+              </svg>
+              <p class="text-gray-500">还没有收录任何歌曲</p>
+            </div>
+          ) : (
+            sortedSongs.map(song => (
+              <SongCard
+                slug={song.slug}
+                title={song.data.title}
+                artist={song.data.artist}
+                publishedAt={song.data.publishedAt}
+                tags={song.data.tags}
+                coverUrl={song.data.coverUrl}
+              />
+            ))
+          )}
+        </div>
+
+        {sortedSongs.length > 0 && (
+          <div class="py-10 text-center text-gray-500 text-sm">
+            共收录 {sortedSongs.length} 首歌曲
+          </div>
+        )}
+      </div>
+    </main>
+
+    <RightPanel />
+  </div>
+</Layout>
