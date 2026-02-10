@@ -22,10 +22,7 @@ const allPosts = await getCollection('blog');
 const filteredPosts = allPosts.filter(post => post.data.tags.includes(tagName));
 
 const sortedPosts = filteredPosts.sort((a, b) => {
-  // Sort by featured first, then by claps
-  if (a.data.featured && !b.data.featured) return -1;
-  if (!a.data.featured && b.data.featured) return 1;
-  return b.data.claps - a.data.claps;
+  return new Date(b.data.publishedAt).valueOf() - new Date(a.data.publishedAt).valueOf();
 });
 
 const categories = [
