@@ -1,73 +1,137 @@
 # andywli.cn Blog
 
-这个项目是基于 Astro 构建的个人博客网站。
+这是一个基于 [Astro](https://astro.build/) 框架构建的个人博客网站，部署在 GitHub Pages 上，使用自定义域名 `andywli.cn`。
 
-## 1. 本地如何更新内容
+## 项目结构
 
-所有的文章内容都位于 `src/content` 目录下。
-
-- **添加新文章**：在 `src/content/blog` (或相应子目录) 中创建一个新的 `.md` 或 `.mdx` 文件。
-- **编辑文章**：直接修改对应的 Markdown 文件即可。
-- **文章格式**：文件头部通常包含 Frontmatter 元数据（如标题、日期、标签等），例如：
-  ```markdown
-  ---
-  title: "我的新文章"
-  pubDate: 2024-03-20
-  description: "这是文章的描述..."
-  category: "科技" # 可选值: 科技, 投资, 经济, 人文, 原创, 其他
-  ---
-  ```
-
-## 2. 本地如何调试代码
-
-确保你的电脑上已经安装了 Node.js。
-
-1. **安装依赖** (首次运行或 `package.json` 变动时执行):
-   ```bash
-   npm install
-   ```
-
-2. **启动本地开发服务器**:
-   ```bash
-   npm run dev
-   ```
-
-3. **预览**:
-   打开浏览器访问提示的地址 (通常是 `http://localhost:4321/blog/`，具体取决于配置的 `base` 路径)。
-
-## 3. 如何推送最新代码到 Github
-
-当你在本地完成修改并测试无误后，可以使用以下命令将代码提交并推送到 GitHub 仓库：
-
-```bash
-# 1. 添加所有修改的文件到暂存区
-git add .
-
-# 2. 提交修改 (请将引号内的内容替换为实际的修改描述)
-git commit -m "update content"
-
-# 3. 推送到远程仓库 (默认推送到 main 分支)
-git push origin main
+```
+andywli.cn/
+├── src/
+│   ├── content/
+│   │   ├── blog/          # 博客文章 (Markdown)
+│   │   └── config.ts      # 内容集合配置
+│   ├── components/        # UI 组件
+│   │   ├── ArticleCard.astro
+│   │   ├── RightPanel.astro
+│   │   ├── Sidebar.astro
+│   │   └── TableOfContents.astro
+│   ├── layouts/
+│   │   └── Layout.astro   # 页面布局模板
+│   └── pages/             # 页面路由
+│       ├── index.astro    # 首页
+│       ├── [slug].astro   # 文章详情页
+│       ├── category/[slug].astro  # 分类页
+│       └── tag/[tag].astro        # 标签页
+├── public/
+│   └── images/            # 静态图片资源
+├── astro.config.mjs       # Astro 配置
+├── tailwind.config.mjs    # Tailwind CSS 配置
+└── package.json
 ```
 
-推送成功后，GitHub Actions 会自动触发构建并部署到 GitHub Pages。
+## 博客文章
 
-## 部署说明 (GitHub Pages + 自定义域名)
+所有文章位于 `src/content/blog/` 目录，目前共有 **11 篇文章**：
 
-本项目配置为使用 GitHub Actions 自动部署到 GitHub Pages，并已启用自定义域名 `andywli.cn`。
+| 文章 | 分类 |
+|-----|------|
+| cognitive-awakening.md | 人文 |
+| solo-ai-company.md | 科技 |
+| wealth-information-asymmetry.md | 投资 |
+| rewrite-your-destiny.md | 人文 |
+| nine-traps-jin-yong.md | 人文 |
+| observing-people.md | 人文 |
+| seven-steps-career.md | 人文 |
+| reset-your-life.md | 人文 |
+| english-programmer.md | 英语 |
+| english-office.md | 英语 |
+| english-home.md | 英语 |
 
-### 配置状态
+## 文章格式
+
+每篇文章使用 Markdown 格式，包含以下 Frontmatter 元数据：
+
+```markdown
+---
+title: "文章标题"
+subtitle: "副标题"
+publishedAt: "2026-02-20"
+readTime: "10 min read"
+tags: ["标签1", "标签2"]
+thumbnailUrl: "https://example.com/image.jpg"
+category: "人文"
+featured: false
+claps: 0
+comments: 0
+---
+
+> 来源：推特（可选）
+
+文章正文内容...
+```
+
+### 分类 (category) 可选值
+
+- 科技
+- 投资
+- 经济
+- 人文
+- 英语
+- 原创
+- 其他
+
+## 本地开发
+
+确保已安装 Node.js (建议 v18+)。
+
+### 安装依赖
+
+```bash
+npm install
+```
+
+### 启动开发服务器
+
+```bash
+npm run dev
+```
+
+访问 `http://localhost:4321/` 预览网站。
+
+### 构建生产版本
+
+```bash
+npm run build
+```
+
+## 部署
+
+项目配置为使用 GitHub Actions 自动部署到 GitHub Pages。
+
+### 配置说明
+
 - **`astro.config.mjs`**:
   - `site`: 'https://andywli.cn'
   - `base`: '/'
 - **`public/CNAME`**: 内容为 `andywli.cn`
-- **GitHub 设置**:
-  - Settings > Pages > Custom domain 已设置为 `andywli.cn`。
-  - DNS 解析已生效 (A记录 + CNAME)。
 
-### 每次推送代码
-只需正常 `git push origin main`。
-- 如果部署后 404，请检查 Repository Settings 里的 Custom Domain 是否被重置（有时 CNAME 文件丢失会导致重置，但代码库里有 `public/CNAME` 应该没问题）。
+### 部署流程
 
+1. 提交代码到 GitHub：
+   ```bash
+   git add .
+   git commit -m "update content"
+   git push origin main
+   ```
 
+2. GitHub Actions 自动触发构建并部署到 GitHub Pages
 
+3. 如遇 404，检查 Repository Settings > Pages > Custom Domain 是否被重置
+
+## 技术栈
+
+- [Astro](https://astro.build/) - 静态站点生成器
+- [Tailwind CSS](https://tailwindcss.com/) - CSS 框架
+- [TypeScript](https://www.typescriptlang.org/) - 类型安全
+- [GitHub Pages](https://pages.github.com/) - 静态托管
+- [GitHub Actions](https://github.com/features/actions) - CI/CD
