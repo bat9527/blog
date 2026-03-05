@@ -141,6 +141,27 @@ declare module 'astro:content' {
 
 	type ContentEntryMap = {
 		"blog": {
+"2026-reflections-restart-life.md": {
+	id: "2026-reflections-restart-life.md";
+  slug: "2026-reflections-restart-life";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"ai-era-education.md": {
+	id: "ai-era-education.md";
+  slug: "ai-era-education";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"cognitive-awakening.md": {
+	id: "cognitive-awakening.md";
+  slug: "cognitive-awakening";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
 "english-home.md": {
 	id: "english-home.md";
   slug: "english-home";
@@ -158,6 +179,13 @@ declare module 'astro:content' {
 "english-programmer.md": {
 	id: "english-programmer.md";
   slug: "english-programmer";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"naval-2025-interview.md": {
+	id: "naval-2025-interview.md";
+  slug: "naval-2025-interview";
   body: string;
   collection: "blog";
   data: InferEntrySchema<"blog">
@@ -183,6 +211,13 @@ declare module 'astro:content' {
   collection: "blog";
   data: InferEntrySchema<"blog">
 } & { render(): Render[".md"] };
+"rewrite-your-destiny.md": {
+	id: "rewrite-your-destiny.md";
+  slug: "rewrite-your-destiny";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
 "seven-steps-career.md": {
 	id: "seven-steps-career.md";
   slug: "seven-steps-career";
@@ -190,21 +225,19 @@ declare module 'astro:content' {
   collection: "blog";
   data: InferEntrySchema<"blog">
 } & { render(): Render[".md"] };
-};
-"songs": {
-"chengyuan.md": {
-	id: "chengyuan.md";
-  slug: "chengyuan";
+"solo-ai-company.md": {
+	id: "solo-ai-company.md";
+  slug: "solo-ai-company";
   body: string;
-  collection: "songs";
-  data: InferEntrySchema<"songs">
+  collection: "blog";
+  data: InferEntrySchema<"blog">
 } & { render(): Render[".md"] };
-"huang.md": {
-	id: "huang.md";
-  slug: "huang";
+"wealth-information-asymmetry.md": {
+	id: "wealth-information-asymmetry.md";
+  slug: "wealth-information-asymmetry";
   body: string;
-  collection: "songs";
-  data: InferEntrySchema<"songs">
+  collection: "blog";
+  data: InferEntrySchema<"blog">
 } & { render(): Render[".md"] };
 };
 
