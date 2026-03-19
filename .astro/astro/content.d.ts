@@ -162,6 +162,13 @@ declare module 'astro:content' {
   collection: "blog";
   data: InferEntrySchema<"blog">
 } & { render(): Render[".md"] };
+"english-basic-everyday-survival.md": {
+	id: "english-basic-everyday-survival.md";
+  slug: "english-basic-everyday-survival";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
 "english-home.md": {
 	id: "english-home.md";
   slug: "english-home";
