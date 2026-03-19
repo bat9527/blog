@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Sidebar from '../components/Sidebar.astro';
 import TableOfContents from '../components/TableOfContents.astro';
 import { getCollection } from 'astro:content';
+import { ENGLISH_CATEGORY, getEnglishSection } from '../data/english';
 
 export async function getStaticPaths() {
   const blogEntries = await getCollection('blog');
@@ -15,20 +16,27 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content, headings } = await entry.render();
 const post = entry.data;
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+const englishSection = getEnglishSection(post.englishSection);
+const isEnglishPost = post.category === ENGLISH_CATEGORY;
+const backHref = isEnglishPost
+  ? `${basePath}/english${englishSection ? `/${englishSection.slug}` : ''}`
+  : `${import.meta.env.BASE_URL}`;
+const backLabel = isEnglishPost ? `← ${englishSection?.label ?? 'English'}` : '← Back';
 ---
 
 <Layout title={post.title} ogImage={post.thumbnailUrl}>
   <!-- Fixed Header - 只在正文区域 -->
   <div class="article-header bg-white/95 backdrop-blur-sm border-b border-gray-100">
     <div class="w-[90%] md:max-w-5xl mx-auto px-4 md:px-6 py-3 md:py-4 flex items-center gap-2 md:gap-3">
-      <a href={`${import.meta.env.BASE_URL}`} class="text-sm text-gray-500 hover:text-gray-900 transition-colors">← Back</a>
+      <a href={backHref} class="text-sm text-gray-500 hover:text-gray-900 transition-colors">{backLabel}</a>
       <div class="h-4 w-[1px] bg-gray-300"></div>
       <span class="text-sm text-gray-500">{post.publishedAt}</span>
     </div>
   </div>
 
   <div class="flex min-h-screen bg-white overflow-x-hidden">
-    <Sidebar />
+    <Sidebar activeTab={post.category === '英语' ? 'english' : 'home'} />
     <TableOfContents headings={headings} />
 
     <main class="flex-1 min-h-screen relative overflow-x-hidden md:ml-[280px] xl:mr-[320px] pt-14 md:pt-16">
@@ -41,10 +49,19 @@ const post = entry.data;
           {post.subtitle}
         </h2>
 
+        {englishSection && (
+          <a
+            href={`${basePath}/english/${englishSection.slug}`}
+            class="inline-flex items-center px-3 py-1 mb-6 md:mb-8 bg-gray-100 text-sm text-gray-700 rounded-full hover:bg-gray-200 transition-colors"
+          >
+            {englishSection.label}
+          </a>
+        )}
+
         <!-- Author/Tag Block -->
         <div class="flex items-center justify-between mb-8 md:mb-12 pb-6 md:pb-8 border-b border-gray-100">
           <div class="flex items-center gap-3">
-            <img src={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/images/avatar.jpg`} class="w-10 h-10 rounded-full" alt="Author" />
+            <img src={`${basePath}/images/avatar.jpg`} class="w-10 h-10 rounded-full" alt="Author" />
             <div>
               <div class="text-sm font-bold text-gray-900">Written by Me</div>
               <div class="text-xs text-gray-500">{post.readTime} · {post.tags.join(', ')}</div>
@@ -63,7 +80,8 @@ const post = entry.data;
 
         <!-- Content - Enhanced Typography -->
         <article 
-          class="prose prose-sm sm:prose-base md:prose-lg prose-slate font-sans max-w-none text-gray-800 leading-relaxed 
+          class="blog-prose
+          prose prose-sm sm:prose-base md:prose-lg prose-slate font-sans max-w-none text-gray-800 leading-relaxed 
           prose-headings:font-bold prose-headings:text-gray-900 
           prose-p:leading-7 md:prose-p:leading-8 prose-p:mb-5 md:prose-p:mb-6 
           prose-a:text-green-700 prose-a:no-underline hover:prose-a:underline
@@ -139,5 +157,18 @@ const post = entry.data;
     .article-header {
       right: 320px;
     }
+  }
+
+  .blog-prose :global(pre code) {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    border-radius: 0;
+    font-size: inherit;
+  }
+
+  .blog-prose :global(pre code::before),
+  .blog-prose :global(pre code::after) {
+    content: none;
   }
 </style>

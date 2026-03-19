@@ -6,6 +6,7 @@ readTime: "10 min read"
 tags: ["英语学习", "生活", "实用技能"]
 thumbnailUrl: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=80&w=2069"
 category: "英语"
+englishSection: "daily-life"
 featured: false
 claps: 0
 comments: 0

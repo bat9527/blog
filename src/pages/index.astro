@@ -15,7 +15,6 @@ const categories = [
   { slug: 'investment', name: '投资' },
   { slug: 'economy', name: '经济' },
   { slug: 'humanities', name: '人文' },
-  { slug: 'english', name: '英语' },
   { slug: 'original', name: '原创' },
   { slug: 'others', name: '其他' },
 ];
@@ -33,9 +32,12 @@ const categories = [
         <div class="md:hidden flex items-center justify-between mb-4 px-4">
           <div class="font-serif font-bold text-2xl tracking-tight">Andy Blog</div>
           <div class="flex gap-3 items-center">
-            <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-            </svg>
+            <a
+              href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/english`}
+              class="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+            >
+              English
+            </a>
             <img src={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/images/avatar.jpg`} class="w-8 h-8 rounded-full" alt="User" />
           </div>
         </div>

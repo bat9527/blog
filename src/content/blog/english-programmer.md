@@ -6,6 +6,7 @@ readTime: "12 min read"
 tags: ["程序员", "英语学习", "职场"]
 thumbnailUrl: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=2070"
 category: "英语"
+englishSection: "tech-career"
 featured: false
 claps: 0
 comments: 0

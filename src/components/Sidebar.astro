@@ -24,6 +24,16 @@ const { activeTab = 'home' } = Astro.props;
       </a>
 
       <a
+        href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/english`}
+        class={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${activeTab === 'english' ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50'}`}
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9A18.022 18.022 0 016.412 9m6.088 9h7m-7 0a15.968 15.968 0 01-1.373-6m1.373 6l-2.755 3m2.755-3l2.755 3m6-13l-4 10-1.5-4.5L11 10l10-4z"></path>
+        </svg>
+        <span class="font-medium text-sm">English</span>
+      </a>
+
+      <a
         href="#"
         class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-600 hover:bg-gray-50 transition-colors"
       >

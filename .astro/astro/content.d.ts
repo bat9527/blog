@@ -183,6 +183,13 @@ declare module 'astro:content' {
   collection: "blog";
   data: InferEntrySchema<"blog">
 } & { render(): Render[".md"] };
+"english-tanzania-fintech-market.md": {
+	id: "english-tanzania-fintech-market.md";
+  slug: "english-tanzania-fintech-market";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
 "naval-2025-interview.md": {
 	id: "naval-2025-interview.md";
   slug: "naval-2025-interview";

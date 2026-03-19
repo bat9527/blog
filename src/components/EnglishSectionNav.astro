@@ -1,0 +1,49 @@
+---
+import {
+  ENGLISH_SECTIONS,
+  type EnglishSectionSlug,
+} from '../data/english';
+
+interface Props {
+  activeSection?: EnglishSectionSlug | 'all';
+  counts: Partial<Record<EnglishSectionSlug, number>>;
+  totalCount: number;
+}
+
+const { activeSection = 'all', counts, totalCount } = Astro.props;
+const basePath = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/english`;
+---
+
+<div class="sticky top-0 bg-white/95 backdrop-blur-sm z-10 border-b border-gray-100 px-4 md:px-0 mb-6">
+  <div class="flex flex-wrap items-center gap-3 md:gap-4 py-2">
+    <a
+      href={basePath}
+      class={`inline-flex items-center gap-2 px-3 py-2 text-sm rounded-full transition-colors ${
+        activeSection === 'all'
+          ? 'bg-gray-900 text-white'
+          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+      }`}
+    >
+      <span>All</span>
+      <span class={`text-xs ${activeSection === 'all' ? 'text-white/80' : 'text-gray-500'}`}>
+        {totalCount}
+      </span>
+    </a>
+
+    {ENGLISH_SECTIONS.map((section) => (
+      <a
+        href={`${basePath}/${section.slug}`}
+        class={`inline-flex items-center gap-2 px-3 py-2 text-sm rounded-full transition-colors ${
+          activeSection === section.slug
+            ? 'bg-gray-900 text-white'
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+        }`}
+      >
+        <span>{section.label}</span>
+        <span class={`text-xs ${activeSection === section.slug ? 'text-white/80' : 'text-gray-500'}`}>
+          {counts[section.slug] ?? 0}
+        </span>
+      </a>
+    ))}
+  </div>
+</div>

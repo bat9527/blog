@@ -6,6 +6,7 @@ readTime: "10 min read"
 tags: ["英语学习", "办公室", "实用技能"]
 thumbnailUrl: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2069"
 category: "英语"
+englishSection: "work-office"
 featured: false
 claps: 0
 comments: 0
@@ -343,4 +344,3 @@ comments: 0
 ---
 
 > 🌟 **坚持就是胜利！** 每天进步一点点，办公室英语 so easy！
-

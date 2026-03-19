@@ -1,0 +1,70 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Sidebar from '../../components/Sidebar.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import RightPanel from '../../components/RightPanel.astro';
+import EnglishSectionNav from '../../components/EnglishSectionNav.astro';
+import { getCollection } from 'astro:content';
+import {
+  ENGLISH_SECTIONS,
+  getEnglishSectionCounts,
+  isEnglishPost,
+  sortPostsByDate,
+} from '../../data/english';
+
+export function getStaticPaths() {
+  return ENGLISH_SECTIONS.map((section) => ({
+    params: { section: section.slug },
+    props: { sectionMeta: section },
+  }));
+}
+
+const { sectionMeta } = Astro.props;
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+const allPosts = await getCollection('blog');
+const englishPosts = sortPostsByDate(allPosts.filter(isEnglishPost));
+const filteredPosts = englishPosts.filter((post) => post.data.englishSection === sectionMeta.slug);
+const counts = getEnglishSectionCounts(englishPosts);
+---
+
+<Layout title={`Andy Blog - ${sectionMeta.label}`} ogImage={`${basePath}/images/avatar.jpg`}>
+  <div class="flex min-h-screen bg-white overflow-x-hidden md:h-screen md:overflow-hidden">
+    <Sidebar activeTab="english" />
+
+    <main class="flex-1 border-r border-gray-100 min-h-screen relative overflow-x-hidden md:h-full md:overflow-y-auto md:ml-[280px]">
+      <div class="w-[90%] md:max-w-[720px] mx-auto pt-6 md:pt-10 min-h-screen pb-20">
+        <EnglishSectionNav
+          activeSection={sectionMeta.slug}
+          counts={counts}
+          totalCount={englishPosts.length}
+        />
+
+        <div class="mt-2 px-4 md:px-0">
+          {filteredPosts.length > 0 ? (
+            filteredPosts.map((post) => (
+              <ArticleCard
+                id={post.slug}
+                title={post.data.title}
+                subtitle={post.data.subtitle}
+                publishedAt={post.data.publishedAt}
+                readTime={post.data.readTime}
+                tags={post.data.tags}
+                thumbnailUrl={post.data.thumbnailUrl}
+              />
+            ))
+          ) : (
+            <div class="py-20 text-center text-gray-500">
+              <p>No articles in this section yet.</p>
+            </div>
+          )}
+
+          <div class="py-10 text-center text-gray-500 text-sm">
+            Build this section one useful note at a time.
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <RightPanel />
+  </div>
+</Layout>
