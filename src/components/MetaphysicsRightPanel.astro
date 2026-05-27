@@ -1,0 +1,766 @@
+---
+interface Props {
+  counts: Record<string, number>;
+  totalCount: number;
+}
+
+const { counts, totalCount } = Astro.props;
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<aside class="hidden lg:block w-[340px] p-8 sticky top-0 h-screen overflow-y-auto no-scrollbar border-l border-gray-100 bg-white z-10">
+  
+  <!-- Metaphysics Branding Header -->
+  <div class="text-center mb-8 pb-8 border-b border-gray-100">
+    <div class="inline-flex items-center gap-2 px-3 py-1 bg-green-50 border border-green-100 rounded-full text-[10px] text-green-700 font-medium mb-3">
+      <span>☯️ 乾坤易道 · 顺势而为</span>
+    </div>
+    <h2 class="text-2xl font-serif font-bold text-gray-900 tracking-tight mb-2">Metaphysics</h2>
+    <p class="text-xs text-gray-600 leading-relaxed">
+      融合东方古典哲学与现代科学视角。探讨命理、风水、占卜与易经，助你在繁杂世事中调理心境与气场。
+    </p>
+  </div>
+
+  <!-- Divination Trigger Button (Simplification) -->
+  <div class="mb-8 p-5 rounded-2xl bg-gray-50 border border-gray-100 shadow-sm text-center">
+    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">每日卜问</h3>
+    <p class="text-xs text-gray-500 mb-4 leading-relaxed">
+      遇事不决？点击下方按钮开启每日一卦，占卜今日运势。
+    </p>
+    <button 
+      id="openDivinationBtn"
+      class="w-full py-2.5 bg-green-600 hover:bg-green-700 active:scale-95 text-white font-semibold text-xs rounded-full shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
+    >
+      <span>🔮</span> 开启每日一卦占卜
+    </button>
+  </div>
+
+  <!-- Divination Calendar Widget -->
+  <div class="mb-8 p-5 rounded-2xl bg-gray-50 border border-gray-100 shadow-sm">
+    <h3 class="text-sm font-bold text-gray-900 font-serif mb-4 flex items-center gap-1.5">
+      <span>📅</span> 乾坤黄历 · 今日宜忌
+    </h3>
+    <div class="space-y-4">
+      <div>
+        <span class="text-[10px] px-2 py-0.5 bg-green-50 border border-green-100 text-green-700 font-bold rounded">宜</span>
+        <p class="text-xs text-gray-600 mt-1.5 leading-relaxed">
+          写代码、部署发布、Review、喝咖啡、给工单排期。
+        </p>
+      </div>
+      <div class="pt-3 border-t border-gray-100">
+        <span class="text-[10px] px-2 py-0.5 bg-rose-50 border border-rose-100 text-rose-700 font-bold rounded">忌</span>
+        <p class="text-xs text-gray-600 mt-1.5 leading-relaxed">
+          盲目重构核心模块、在生产环境热修复、跟PM争吵需求。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recommended Topics -->
+  <div class="mb-8">
+    <h3 class="text-sm font-bold text-gray-900 mb-4">推荐探讨</h3>
+    <div class="flex flex-wrap gap-2">
+      {['风水', '命理', '占卜', '易经'].map(tag => (
+        <a 
+          href={`${basePath}/metaphysics`}
+          class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-full text-xs text-gray-600 hover:text-gray-950 transition-colors"
+        >
+          #{tag}
+        </a>
+      ))}
+    </div>
+  </div>
+  
+  <!-- Metaphysics Quotes / Wisdom -->
+  <div class="p-5 rounded-2xl bg-gray-50 border border-gray-100">
+    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">易道格言</h3>
+    <p class="text-xs text-gray-600 italic leading-relaxed">
+      “极数知来之谓占，通变之谓事，阴阳不测之谓神。”
+    </p>
+    <span class="text-[10px] text-gray-400 block mt-2 text-right">— 《易经 · 系辞上》</span>
+  </div>
+</aside>
+
+<!-- Centered Divination Overlay Modal (弹窗) -->
+<div 
+  id="divinationModal" 
+  class="fixed inset-0 bg-black/45 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden transition-opacity duration-300"
+>
+  <div 
+    class="bg-white rounded-3xl max-w-6xl w-full md:w-[1140px] p-10 md:p-14 shadow-2xl border border-gray-100 relative modal-animate"
+  >
+    <!-- Close Button -->
+    <button 
+      id="closeDivinationBtn"
+      class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition-colors w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 cursor-pointer"
+      aria-label="Close modal"
+    >
+      <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+
+    <!-- Modal Content: 2-Column Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-14 items-stretch">
+      
+      <!-- Left Column: Toss, Yao Canvas & Action -->
+      <div class="flex flex-col h-full justify-between pr-0 md:pr-10 md:border-r md:border-gray-100">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-green-50 border border-green-100 rounded text-sm text-green-700 font-semibold">
+              <span>🔮 每日一卦 · 易经卜问</span>
+            </div>
+            
+            <!-- Dynamic Toss Count Progress -->
+            <div id="tossProgressContainer" class="text-xs md:text-sm font-semibold text-gray-500 hidden">
+              进度: <span id="tossProgressText" class="text-green-600 font-mono font-bold">第 1/6 次</span>
+            </div>
+          </div>
+          
+          <p class="text-sm text-gray-500 mb-5 leading-relaxed">
+            心怀所问之事（如代码、职场），点击下方的“摇签起卦”。模拟三枚古铜钱落地，共抛掷六次，自下而上层层绘制六爻本象。
+          </p>
+
+          <!-- Visual Yao Stack (六爻画线区) -->
+          <div class="my-4 p-4 bg-gray-50/50 rounded-2xl border border-gray-100/80">
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3 text-center">六爻画线画布 (自下而上绘制)</div>
+            <div class="flex flex-col-reverse gap-2.5">
+              {[0, 1, 2, 3, 4, 5].map((index) => {
+                const names = ["初爻", "二爻", "三爻", "四爻", "五爻", "上爻"];
+                return (
+                  <div class="flex items-center justify-between py-1.5 px-3 bg-white rounded-xl border border-gray-100 shadow-sm transition-all duration-300" id={`yaoRow-${index}`}>
+                    <span class="text-[11px] font-bold text-gray-400 w-10" id={`yaoName-${index}`}>{names[index]}</span>
+                    
+                    <div class="flex-1 flex justify-center px-4" id={`yaoLineContainer-${index}`}>
+                      <!-- Empty placeholder line (dashed) -->
+                      <div class="w-full h-[6px] border-t-2 border-dashed border-gray-200" id={`yaoPlaceholder-${index}`}></div>
+                      
+                      <!-- Yang Line: ⚊ (solid green) -->
+                      <div class="w-full h-[8px] bg-green-600 rounded-full hidden" id={`yaoYang-${index}`}></div>
+                      
+                      <!-- Yin Line: ⚋ (broken grey) -->
+                      <div class="w-full flex justify-between gap-4 hidden" id={`yaoYin-${index}`}>
+                        <div class="w-[44%] h-[8px] bg-gray-400 rounded-full"></div>
+                        <div class="w-[44%] h-[8px] bg-gray-400 rounded-full"></div>
+                      </div>
+                    </div>
+                    
+                    <div class="w-16 text-right">
+                      <span class="text-[9px] md:text-[10px] font-extrabold text-rose-600 bg-rose-50 border border-rose-100 px-1.5 py-0.5 rounded-md hidden animate-pulse" id={`yaoChange-${index}`}>变爻</span>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+
+        <!-- Coins Toss Area -->
+        <div class="flex justify-center gap-10 my-4 py-4 bg-gray-50/50 rounded-2xl border border-gray-100/50 h-36 items-center">
+          <div class="coin" id="coin1">
+            <div class="coin-inner">
+              <div class="coin-front">乾</div>
+              <div class="coin-back">坤</div>
+            </div>
+          </div>
+          <div class="coin" id="coin2">
+            <div class="coin-inner">
+              <div class="coin-front">乾</div>
+              <div class="coin-back">坤</div>
+            </div>
+          </div>
+          <div class="coin" id="coin3">
+            <div class="coin-inner">
+              <div class="coin-front">乾</div>
+              <div class="coin-back">坤</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <button 
+          id="castBtn"
+          class="w-full py-4 bg-green-600 hover:bg-green-700 active:scale-95 text-white font-bold text-lg rounded-full shadow-md transition-all flex items-center justify-center gap-2.5 cursor-pointer font-serif"
+        >
+          <span>☯️</span> 摇签起卦 (第 1/6 次)
+        </button>
+      </div>
+
+      <!-- Right Column: Live Logs or Results Reveal (Dynamically stretches to match left column height) -->
+      <div class="flex flex-col h-full min-h-[580px] relative bg-gray-50/30 rounded-2xl p-4 border border-gray-100/30">
+        
+        <!-- Live Casting Logs & Initial Placeholder -->
+        <div id="widgetPlaceholder" class="w-full h-full min-h-0 border border-dashed border-gray-200 bg-white rounded-xl flex flex-col justify-between p-6 md:p-8 transition-all">
+          <div class="border-b border-gray-100 pb-3 mb-4 flex items-center justify-between">
+            <span class="text-sm font-bold text-gray-900 font-serif flex items-center gap-1.5">
+              <span>☯️</span> 起卦直播 · 动态演绎
+            </span>
+            <span id="liveProgressTag" class="text-xs px-2.5 py-0.5 bg-gray-100 text-gray-500 rounded font-medium">尚未起卦</span>
+          </div>
+
+          <!-- Log Content Area -->
+          <div class="flex-1 overflow-y-auto no-scrollbar py-2 h-[400px]" id="castLogScrollContainer">
+            <div id="initialPrompt" class="flex flex-col items-center justify-center h-full text-center text-gray-400 my-auto">
+              <div class="w-20 h-20 rounded-full border border-gray-100 bg-gray-50 flex items-center justify-center text-4xl text-gray-400 animate-pulse mb-4">
+                ☯️
+              </div>
+              <span class="text-base md:text-lg font-semibold text-gray-500">心怀至诚，点击左侧按钮起卦</span>
+              <p class="text-xs text-gray-400 mt-2 max-w-xs leading-relaxed">
+                每次起卦需抛掷 6 次铜钱。您投掷的每一次都将被计入今日六爻演变之中。
+              </p>
+            </div>
+            
+            <ul id="castLogList" class="space-y-3.5 hidden">
+              <!-- Dynamically populated via client-side javascript -->
+            </ul>
+          </div>
+          
+          <div class="border-t border-gray-100 pt-3 text-center">
+            <p class="text-[11px] text-gray-400 italic">“天垂象，见吉凶，圣人象之” — 《易经 · 系辞上》</p>
+          </div>
+        </div>
+
+        <!-- Cast Result Card (Takes full height and handles overflow scroll beautifully) -->
+        <div id="widgetResult" class="w-full h-full min-h-0 bg-white border border-gray-100 rounded-xl p-8 md:p-9 shadow-lg flex flex-col justify-between hidden transition-all duration-500 scale-95 opacity-0 overflow-y-auto no-scrollbar">
+          <div>
+            <div class="border-b border-gray-100 pb-3 mb-4 text-center">
+              <span class="text-sm px-4 py-1 bg-green-50 border border-green-100 rounded text-green-700 font-bold" id="resGuaClass">大吉</span>
+            </div>
+            
+            <!-- Dual Hexagrams Layout Grid -->
+            <div class="grid grid-cols-2 gap-4 border-b border-gray-100 pb-4 mb-4">
+              <!-- Left Card: 本卦 -->
+              <div class="p-3.5 bg-gray-50/50 rounded-xl border border-gray-100 flex flex-col items-center text-center">
+                <span class="text-[10px] text-green-700 font-bold tracking-wider mb-1">【本卦 · 现状】</span>
+                <div class="text-5xl md:text-6xl text-green-600 font-serif leading-none my-2" id="resGuaSymbol">䷀</div>
+                <h4 class="font-serif font-bold text-base md:text-lg text-gray-900 leading-tight" id="resGuaName">乾为天</h4>
+                <p class="text-[11px] text-gray-500 italic mt-1.5 max-w-[140px] truncate-2-lines" id="resGuaLine">“天行健，君子以自强不息”</p>
+              </div>
+
+              <!-- Right Card: 变卦 -->
+              <div class="p-3.5 bg-green-50/10 rounded-xl border border-green-100/30 flex flex-col items-center text-center relative" id="changeGuaContainer">
+                <span class="text-[10px] text-emerald-700 font-bold tracking-wider mb-1">【变卦 · 未来】</span>
+                <div class="text-5xl md:text-6xl text-emerald-600 font-serif leading-none my-2" id="resChangeSymbol">䷁</div>
+                <h4 class="font-serif font-bold text-base md:text-lg text-gray-900 leading-tight" id="resChangeName">坤为地</h4>
+                <p class="text-[11px] text-gray-500 italic mt-1.5 max-w-[140px] truncate-2-lines" id="resChangeLine">“地势坤，君子以厚德载物”</p>
+                
+                <!-- Stable Cover if no change -->
+                <div id="stableGuaCover" class="absolute inset-0 bg-white/95 rounded-xl flex flex-col items-center justify-center text-center p-3 hidden">
+                  <span class="text-3xl mb-1.5">🔒</span>
+                  <span class="text-xs font-bold text-gray-400">六爻安定</span>
+                  <span class="text-[9px] text-gray-300 mt-1">无变爻，终始如一</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Detailed Synthesis Analysis Section -->
+            <div class="space-y-4 text-base text-gray-700">
+              <div>
+                <span class="text-green-700 font-extrabold block mb-1.5 text-xs md:text-sm uppercase tracking-wider">卦象天机解析 (变爻指示)</span>
+                <p class="leading-relaxed text-gray-700 text-xs md:text-sm italic bg-gray-50 p-3 rounded-xl border border-gray-100" id="resGuaInterpretation">
+                  <!-- Generated dynamically based on changing line count -->
+                </p>
+              </div>
+              
+              <div>
+                <span class="text-green-700 font-extrabold block mb-1.5 text-xs md:text-sm uppercase tracking-wider">当前本卦详解</span>
+                <p class="leading-relaxed text-gray-700 text-xs md:text-sm" id="resGuaDesc">大吉之卦，充满无限的创造力与勃勃生机。</p>
+              </div>
+              
+              <div>
+                <span class="text-gray-500 font-extrabold block mb-1.5 text-xs md:text-sm uppercase tracking-wider">今日代码与运势启示</span>
+                <p class="leading-relaxed text-gray-700 text-xs md:text-sm" id="resGuaAdvice">写代码神清气爽！适合攻克难关。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Coin Animation & Flip styling */
+  .coin {
+    width: 90px;
+    height: 90px;
+    perspective: 1000px;
+    cursor: default;
+  }
+  
+  .coin-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  
+  .coin.flip .coin-inner {
+    animation: toss 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+  
+  .coin-front, .coin-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    font-weight: 900;
+    font-family: "PingFang SC", "Microsoft YaHei", serif;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+  }
+  
+  /* Gold Coin Style (Yang / Head) */
+  .coin-front {
+    background: radial-gradient(circle at 35% 35%, #fce999, #d4af37 60%, #9e7815);
+    color: #4a3403;
+    border: 2px double #fde88e;
+    text-shadow: 0px 1px 0px rgba(255,255,255,0.4);
+  }
+  
+  /* Silver/Dark Coin Style (Yin / Tail) */
+  .coin-back {
+    background: radial-gradient(circle at 35% 35%, #a1a8b3, #6b7280 60%, #374151);
+    color: #f3f4f6;
+    border: 2px double #cbd5e1;
+    transform: rotateY(180deg);
+    text-shadow: 0px 1px 0px rgba(0,0,0,0.6);
+  }
+  
+  /* Inner Square Cutout for Chinese Coin look */
+  .coin-front::after, .coin-back::after {
+    content: '';
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    background: #f8f9fa; /* Matches coin toss bg slot */
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .coin-front::after {
+    border-color: rgba(74, 52, 3, 0.3);
+  }
+  .coin-back::after {
+    border-color: rgba(255,255,255,0.15);
+  }
+ 
+  @keyframes toss {
+    0% {
+      transform: translateY(0) rotateX(0deg) rotateY(0deg) scale(1);
+    }
+    30% {
+      transform: translateY(-90px) rotateX(360deg) rotateY(180deg) scale(1.15);
+    }
+    60% {
+      transform: translateY(-20px) rotateX(720deg) rotateY(540deg) scale(0.95);
+    }
+    100% {
+      transform: translateY(0) rotateX(1440deg) rotateY(var(--final-rotation, 0deg)) scale(1);
+    }
+  }
+
+  /* Fade-in transitions for Result card */
+  .fade-in-slide {
+    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes modalZoom {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  .modal-animate {
+    animation: modalZoom 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(15px) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  
+  .truncate-2-lines {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+  }
+</style>
+
+<!-- Client Side Interactive script -->
+<script>
+  import { HEXAGRAMS, HEXAGRAM_BINARY_MAP } from '../data/hexagrams';
+
+  // Modal Open/Close Selectors
+  const divinationModal = document.getElementById('divinationModal');
+  const openDivinationBtn = document.getElementById('openDivinationBtn');
+  const closeDivinationBtn = document.getElementById('closeDivinationBtn');
+
+  // Divination Casting Elements
+  const castBtn = document.getElementById('castBtn') as HTMLButtonElement | null;
+  const coin1 = document.getElementById('coin1');
+  const coin2 = document.getElementById('coin2');
+  const coin3 = document.getElementById('coin3');
+  const placeholder = document.getElementById('widgetPlaceholder');
+  const result = document.getElementById('widgetResult');
+
+  // Yao progress variables
+  let tossCount = 0;
+  const tossedValues: number[] = [];
+  let isCasting = false;
+
+  function resetDivination() {
+    tossCount = 0;
+    tossedValues.length = 0;
+    isCasting = false;
+
+    // Reset button
+    if (castBtn) {
+      castBtn.disabled = false;
+      castBtn.innerHTML = '<span>☯️</span> 摇签起卦 (第 1/6 次)';
+    }
+
+    // Reset progress container
+    const tossProgressContainer = document.getElementById('tossProgressContainer');
+    if (tossProgressContainer) tossProgressContainer.classList.add('hidden');
+
+    // Reset Visual Yao Stack slots
+    for (let i = 0; i < 6; i++) {
+      const placeholderLine = document.getElementById(`yaoPlaceholder-${i}`);
+      const yang = document.getElementById(`yaoYang-${i}`);
+      const yin = document.getElementById(`yaoYin-${i}`);
+      const change = document.getElementById(`yaoChange-${i}`);
+      const row = document.getElementById(`yaoRow-${i}`);
+
+      if (placeholderLine) placeholderLine.classList.remove('hidden');
+      if (yang) yang.classList.add('hidden');
+      if (yin) yin.classList.add('hidden');
+      if (change) change.classList.add('hidden');
+      if (row) {
+        row.className = 'flex items-center justify-between py-1.5 px-3 bg-white rounded-xl border border-gray-100 shadow-sm transition-all duration-300';
+      }
+    }
+
+    // Reset Right Panel UI elements
+    if (placeholder) placeholder.classList.remove('hidden');
+    if (result) result.classList.add('hidden', 'scale-95', 'opacity-0');
+
+    const initialPrompt = document.getElementById('initialPrompt');
+    const castLogList = document.getElementById('castLogList');
+    if (initialPrompt) initialPrompt.classList.remove('hidden');
+    if (castLogList) {
+      castLogList.classList.add('hidden');
+      castLogList.innerHTML = ''; // Clear logs
+    }
+
+    const liveProgressTag = document.getElementById('liveProgressTag');
+    if (liveProgressTag) {
+      liveProgressTag.innerText = '尚未起卦';
+      liveProgressTag.className = 'text-xs px-2.5 py-0.5 bg-gray-100 text-gray-500 rounded font-medium';
+    }
+  }
+
+  if (openDivinationBtn && divinationModal) {
+    openDivinationBtn.addEventListener('click', () => {
+      resetDivination(); // Reset fresh
+      divinationModal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden'; // Disable scroll
+    });
+  }
+
+  function closeModal() {
+    if (divinationModal) {
+      divinationModal.classList.add('hidden');
+      document.body.style.overflow = ''; // Restore scroll
+    }
+  }
+
+  if (closeDivinationBtn) {
+    closeDivinationBtn.addEventListener('click', closeModal);
+  }
+
+  if (divinationModal) {
+    divinationModal.addEventListener('click', (e) => {
+      if (e.target === divinationModal) {
+        closeModal();
+      }
+    });
+  }
+
+  // Divination Casting Logic (One-Click Automated Cascade State Machine)
+  function runAutomaticToss() {
+    if (isCasting) return;
+    if (tossCount >= 6) {
+      // All 6 tosses are completed! Pause briefly so user sees the 6th line, then auto-reveal the final analysis card.
+      setTimeout(() => {
+        showFinalResult();
+      }, 1000);
+      return;
+    }
+
+    isCasting = true;
+
+    // Show progress container
+    const tossProgressContainer = document.getElementById('tossProgressContainer');
+    const tossProgressText = document.getElementById('tossProgressText');
+    if (tossProgressContainer) tossProgressContainer.classList.remove('hidden');
+    if (tossProgressText) tossProgressText.innerText = `第 ${tossCount + 1}/6 次`;
+
+    // Disable button to prevent manual clicking during cascade
+    if (castBtn) {
+      castBtn.disabled = true;
+      castBtn.innerHTML = `<span>🔮</span> 正在进行第 ${tossCount + 1}/6 次起卦...`;
+    }
+
+    // Outcomes of 3 coins: 1 (Yang/Head/3 points) or 0 (Yin/Tail/2 points)
+    const outcomes = [
+      Math.random() > 0.5 ? 1 : 0,
+      Math.random() > 0.5 ? 1 : 0,
+      Math.random() > 0.5 ? 1 : 0
+    ];
+
+    // Flip coins
+    const coins = [coin1, coin2, coin3];
+    coins.forEach((coin, idx) => {
+      if (coin) {
+        coin.classList.remove('flip');
+        void coin.offsetWidth;
+        const finalRotation = outcomes[idx] === 1 ? '1440deg' : '1620deg';
+        coin.style.setProperty('--final-rotation', finalRotation);
+        coin.classList.add('flip');
+      }
+    });
+
+    // Wait for toss animation (1200ms)
+    setTimeout(() => {
+      // Calculate sum (Head = 3 points, Tail = 2 points)
+      const coinScores = outcomes.map(o => o === 1 ? 3 : 2);
+      const sum = coinScores[0] + coinScores[1] + coinScores[2]; // Sum is 6, 7, 8, or 9
+      tossedValues.push(sum);
+
+      const currentYaoIndex = tossCount;
+
+      // Update Yao Canvas visual elements
+      const placeholderLine = document.getElementById(`yaoPlaceholder-${currentYaoIndex}`);
+      const yang = document.getElementById(`yaoYang-${currentYaoIndex}`);
+      const yin = document.getElementById(`yaoYin-${currentYaoIndex}`);
+      const change = document.getElementById(`yaoChange-${currentYaoIndex}`);
+      const row = document.getElementById(`yaoRow-${currentYaoIndex}`);
+
+      if (placeholderLine) placeholderLine.classList.add('hidden');
+
+      if (sum === 7 || sum === 9) {
+        if (yang) yang.classList.remove('hidden');
+      } else {
+        if (yin) yin.classList.remove('hidden');
+      }
+
+      // Highlight变爻 rows
+      if (sum === 6 || sum === 9) {
+        if (change) change.classList.remove('hidden');
+        if (row) {
+          row.className = 'flex items-center justify-between py-1.5 px-3 bg-rose-50/20 rounded-xl border border-rose-200 shadow-sm transition-all duration-300';
+        }
+      } else {
+        if (row) {
+          row.className = 'flex items-center justify-between py-1.5 px-3 bg-green-50/30 rounded-xl border border-green-200 shadow-sm transition-all duration-300';
+        }
+      }
+
+      // Hide initial prompt, reveal list log
+      const initialPrompt = document.getElementById('initialPrompt');
+      const castLogList = document.getElementById('castLogList');
+      if (initialPrompt) initialPrompt.classList.add('hidden');
+      if (castLogList) castLogList.classList.remove('hidden');
+
+      // Append log entry
+      const yaoNames = ["初爻", "二爻", "三爻", "四爻", "五爻", "上爻"];
+      const currentYaoName = yaoNames[currentYaoIndex];
+      let logMsg = '';
+
+      if (sum === 6) {
+        logMsg = `<span class="text-rose-500 font-bold">[老阴 ⚋ ⭕]</span> 3枚全是反面！阴极生阳之象，此处为变爻。未来可能有重大的技术重构与架构转型！`;
+      } else if (sum === 7) {
+        logMsg = `<span class="text-green-600 font-bold">[少阳 ⚊]</span> 2反1正。阳气初升，稳扎稳打。今日适合编写基础业务，逻辑运行极其稳健。`;
+      } else if (sum === 8) {
+        logMsg = `<span class="text-gray-500 font-bold">[少阴 ⚋]</span> 1反2正。阴气微聚，收敛锋芒。今日适合静坐自查代码，排查隐藏的安全隐患。`;
+      } else if (sum === 9) {
+        logMsg = `<span class="text-amber-500 font-bold">[老阳 ⚊ ❌]</span> 3枚全是正面！阳极生阴之兆，此处为变爻。当前思维极其活跃，但切忌亢龙有悔，防范部署冲突！`;
+      }
+
+      const logLi = document.createElement('li');
+      logLi.className = 'p-3.5 bg-gray-50 rounded-xl border border-gray-100 text-xs md:text-sm leading-relaxed text-gray-700 border-l-4 border-l-green-600 flex flex-col gap-1';
+      if (sum === 6 || sum === 9) {
+        logLi.className = 'p-3.5 bg-rose-50/30 rounded-xl border border-rose-100 text-xs md:text-sm leading-relaxed text-gray-700 border-l-4 border-l-rose-500 flex flex-col gap-1';
+      }
+      logLi.innerHTML = `
+        <span class="text-[10px] font-bold text-gray-400 font-mono">${currentYaoName} (${currentYaoIndex + 1}/6次抛掷)</span>
+        <p class="text-gray-800">${logMsg}</p>
+      `;
+
+      if (castLogList) {
+        castLogList.appendChild(logLi);
+        const scrollContainer = document.getElementById('castLogScrollContainer');
+        if (scrollContainer) {
+          scrollContainer.scrollTop = scrollContainer.scrollHeight;
+        }
+      }
+
+      // Update live status tag
+      const liveProgressTag = document.getElementById('liveProgressTag');
+      if (liveProgressTag) {
+        liveProgressTag.innerText = `起卦中 ${currentYaoIndex + 1}/6`;
+        liveProgressTag.className = 'text-xs px-2.5 py-0.5 bg-green-50 text-green-700 border border-green-100 rounded font-medium';
+      }
+
+      tossCount++;
+      isCasting = false;
+
+      // Automatically cascade to next toss after 800ms
+      setTimeout(() => {
+        runAutomaticToss();
+      }, 800);
+    }, 1200);
+  }
+
+  function showFinalResult() {
+    if (tossedValues.length < 6) return;
+
+    // 1. Build binary string representations
+    // Sums: 7/9 are Yang (1), 6/8 are Yin (0)
+    const binaryOriginal = tossedValues.map(sum => (sum === 7 || sum === 9) ? '1' : '0').join('');
+    
+    // In Changed Hexagram, 6 (老阴) changes to Yang (1), 9 (老阳) changes to Yin (0). 7/8 stay same.
+    const binaryChanged = tossedValues.map(sum => {
+      if (sum === 6) return '1';
+      if (sum === 9) return '0';
+      return (sum === 7) ? '1' : '0';
+    }).join('');
+
+    // 2. Count changing lines
+    const changingCount = tossedValues.filter(sum => sum === 6 || sum === 9).length;
+
+    // 3. Lookup hexagrams
+    const indexOriginal = HEXAGRAM_BINARY_MAP[binaryOriginal];
+    const indexChanged = HEXAGRAM_BINARY_MAP[binaryChanged];
+
+    const hexOriginal = HEXAGRAMS.find(h => h.index === indexOriginal);
+    const hexChanged = HEXAGRAMS.find(h => h.index === indexChanged);
+
+    if (!hexOriginal) return;
+
+    // 4. Update the Result card UI
+    const resGuaClass = document.getElementById('resGuaClass');
+    const resGuaSymbol = document.getElementById('resGuaSymbol');
+    const resGuaName = document.getElementById('resGuaName');
+    const resGuaLine = document.getElementById('resGuaLine');
+    const resGuaDesc = document.getElementById('resGuaDesc');
+    const resGuaAdvice = document.getElementById('resGuaAdvice');
+
+    const resChangeSymbol = document.getElementById('resChangeSymbol');
+    const resChangeName = document.getElementById('resChangeName');
+    const resChangeLine = document.getElementById('resChangeLine');
+    const stableGuaCover = document.getElementById('stableGuaCover');
+    const resGuaInterpretation = document.getElementById('resGuaInterpretation');
+
+    // Bind original hexagram
+    if (resGuaSymbol) resGuaSymbol.innerText = hexOriginal.symbol;
+    if (resGuaName) resGuaName.innerText = hexOriginal.name;
+    if (resGuaLine) resGuaLine.innerText = hexOriginal.line;
+    if (resGuaDesc) resGuaDesc.innerText = hexOriginal.desc;
+    if (resGuaAdvice) resGuaAdvice.innerText = hexOriginal.advice;
+
+    // Setup fortune class style
+    if (resGuaClass) {
+      resGuaClass.innerText = hexOriginal.grade;
+      if (hexOriginal.grade.includes('大吉') || hexOriginal.grade.includes('上上吉') || hexOriginal.grade.includes('上吉')) {
+        resGuaClass.className = 'text-sm px-4 py-1 bg-green-50 border border-green-100 rounded text-green-700 font-bold';
+      } else if (hexOriginal.grade.includes('中吉') || hexOriginal.grade.includes('小吉') || hexOriginal.grade.includes('平吉')) {
+        resGuaClass.className = 'text-sm px-4 py-1 bg-emerald-50 border border-emerald-100 rounded text-emerald-700 font-bold';
+      } else {
+        resGuaClass.className = 'text-sm px-4 py-1 bg-gray-100 border border-gray-200 rounded text-gray-600 font-bold';
+      }
+    }
+
+    // Bind changed hexagram
+    if (changingCount > 0 && hexChanged) {
+      if (stableGuaCover) stableGuaCover.classList.add('hidden');
+      if (resChangeSymbol) resChangeSymbol.innerText = hexChanged.symbol;
+      if (resChangeName) resChangeName.innerText = hexChanged.name;
+      if (resChangeLine) resChangeLine.innerText = hexChanged.line;
+    } else {
+      if (stableGuaCover) stableGuaCover.classList.remove('hidden');
+    }
+
+    // 5. Generate synthesized interpretation based on Zhu Xi's rules
+    let interpretation = '';
+    const yaoNames = ["初爻", "二爻", "三爻", "四爻", "五爻", "上爻"];
+    const changingIndices: number[] = [];
+    tossedValues.forEach((sum, idx) => {
+      if (sum === 6 || sum === 9) {
+        changingIndices.push(idx);
+      }
+    });
+
+    if (changingCount === 0) {
+      interpretation = `<strong>【静卦 · 安稳之局】</strong> 本卦六爻安稳无变。当前局势极其稳定，阻碍微弱。请专注当前，以本卦《${hexOriginal.name}》的经典解析为指南，行百里半九十，踏实推进，终有所获。`;
+    } else if (changingCount === 1) {
+      const activeYao = yaoNames[changingIndices[0]];
+      interpretation = `<strong>【单爻变 · 核心指引】</strong> 本卦仅有 <strong>${activeYao}</strong> 一个变爻（${tossedValues[changingIndices[0]] === 9 ? '老阳' : '老阴'}）。根据朱熹解卦之法，此爻为全局的核心转折点与隐秘天机，请仔细参详此爻动向以做决策。`;
+    } else if (changingCount === 2) {
+      const yao1 = yaoNames[changingIndices[0]];
+      const yao2 = yaoNames[changingIndices[1]];
+      interpretation = `<strong>【双爻变 · 阴阳博弈】</strong> 本卦共有 <strong>${yao1}</strong> 和 <strong>${yao2}</strong> 两个变爻。这象征着两个独立的因素在明暗拉扯。建议以靠上方的 <strong>${yao2}</strong> 之意为主要参考，理清优先级与轻重缓急。`;
+    } else if (changingCount === 3) {
+      interpretation = `<strong>【三爻变 · 转型过渡期】</strong> 变爻多达 3 个。局势处于新旧交替、运势大破大立的分水岭。本卦（代表现状）与变卦（代表未来<strong>《${hexChanged?.name}》</strong>）能量对半开，建议在稳住当前底座的同时，拥抱未来新方向。`;
+    } else if (changingCount === 4 || changingCount === 5) {
+      interpretation = `<strong>【多爻变 · 变卦主导】</strong> 变爻达 ${changingCount} 个，旧局势正在迅速冰消瓦解，未来走向的【变卦】<strong>《${hexChanged?.name}》</strong>已然占据决定性主导地位。今日行事应彻底打破常规，顺应新环境。`;
+    } else if (changingCount === 6) {
+      interpretation = `<strong>【六爻尽变 · 乾坤重组】</strong> 六爻尽变！乾坤扭转，局势彻底大洗牌。您已直接跨越进入全新的变卦<strong>《${hexChanged?.name}》</strong>之境，一切陈规旧弊清零，重新出发，大吉！`;
+    }
+
+    if (resGuaInterpretation) resGuaInterpretation.innerHTML = interpretation;
+
+    // 6. Flip panels with zoom transition
+    if (placeholder) placeholder.classList.add('hidden');
+    if (result) {
+      result.classList.remove('hidden');
+      void result.offsetWidth;
+      result.classList.remove('scale-95', 'opacity-0');
+      result.classList.add('fade-in-slide');
+    }
+
+    // 7. Update button to reset
+    if (castBtn) {
+      castBtn.disabled = false;
+      castBtn.innerHTML = '<span>☯️</span> 重新起卦';
+    }
+  }
+
+  // Handle CTA Button clicks (Tossing, Resolving, Resetting)
+  if (castBtn) {
+    castBtn.addEventListener('click', () => {
+      if (tossCount === 0) {
+        runAutomaticToss();
+      } else if (tossCount === 6) {
+        resetDivination();
+      }
+    });
+  }
+</script>

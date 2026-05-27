@@ -4,6 +4,7 @@ import Sidebar from '../components/Sidebar.astro';
 import TableOfContents from '../components/TableOfContents.astro';
 import { getCollection } from 'astro:content';
 import { ENGLISH_CATEGORY, getEnglishSection } from '../data/english';
+import { METAPHYSICS_CATEGORY, getMetaphysicsSection } from '../data/metaphysics';
 
 export async function getStaticPaths() {
   const blogEntries = await getCollection('blog');
@@ -18,11 +19,20 @@ const { Content, headings } = await entry.render();
 const post = entry.data;
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
 const englishSection = getEnglishSection(post.englishSection);
+const metaphysicsSection = getMetaphysicsSection(post.metaphysicsSection);
 const isEnglishPost = post.category === ENGLISH_CATEGORY;
-const backHref = isEnglishPost
-  ? `${basePath}/english${englishSection ? `/${englishSection.slug}` : ''}`
-  : `${import.meta.env.BASE_URL}`;
-const backLabel = isEnglishPost ? `← ${englishSection?.label ?? 'English'}` : '← Back';
+const isMetaphysicsPost = post.category === METAPHYSICS_CATEGORY;
+
+let backHref = `${import.meta.env.BASE_URL}`;
+let backLabel = '← Back';
+
+if (isEnglishPost) {
+  backHref = `${basePath}/english${englishSection ? `/${englishSection.slug}` : ''}`;
+  backLabel = `← ${englishSection?.label ?? 'English'}`;
+} else if (isMetaphysicsPost) {
+  backHref = `${basePath}/metaphysics${metaphysicsSection ? `/${metaphysicsSection.slug}` : ''}`;
+  backLabel = `← 易道 · ${metaphysicsSection?.label ?? '专栏'}`;
+}
 ---
 
 <Layout title={post.title} ogImage={post.thumbnailUrl}>
@@ -36,7 +46,7 @@ const backLabel = isEnglishPost ? `← ${englishSection?.label ?? 'English'}` : 
   </div>
 
   <div class="flex min-h-screen bg-white overflow-x-hidden">
-    <Sidebar activeTab={post.category === '英语' ? 'english' : 'home'} />
+    <Sidebar activeTab={post.category === '英语' ? 'english' : (post.category === '玄学' ? 'metaphysics' : 'home')} />
     <TableOfContents headings={headings} />
 
     <main class="flex-1 min-h-screen relative overflow-x-hidden md:ml-[280px] xl:mr-[320px] pt-14 md:pt-16">

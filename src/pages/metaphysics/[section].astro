@@ -1,0 +1,87 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Sidebar from '../../components/Sidebar.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import MetaphysicsSectionNav from '../../components/MetaphysicsSectionNav.astro';
+import MetaphysicsRightPanel from '../../components/MetaphysicsRightPanel.astro';
+import { getCollection } from 'astro:content';
+import {
+  METAPHYSICS_SECTIONS,
+  METAPHYSICS_CATEGORY,
+  getMetaphysicsSectionCounts,
+} from '../../data/metaphysics';
+
+export function getStaticPaths() {
+  return METAPHYSICS_SECTIONS.map((section) => ({
+    params: { section: section.slug },
+    props: { sectionMeta: section },
+  }));
+}
+
+const { sectionMeta } = Astro.props;
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+const allPosts = await getCollection('blog');
+
+const metaphysicsPosts = allPosts
+  .filter(post => post.data.category === METAPHYSICS_CATEGORY)
+  .sort((a, b) => new Date(b.data.publishedAt).valueOf() - new Date(a.data.publishedAt).valueOf());
+
+const filteredPosts = metaphysicsPosts.filter((post) => post.data.metaphysicsSection === sectionMeta.slug);
+const counts = getMetaphysicsSectionCounts(metaphysicsPosts);
+---
+
+<Layout title={`Metaphysics - ${sectionMeta.label}`} ogImage={`${basePath}/images/fengshui-desk.jpg`}>
+  <div class="flex min-h-screen bg-white text-gray-900 overflow-x-hidden md:h-screen md:overflow-hidden">
+    <Sidebar activeTab="metaphysics" theme="light" />
+
+    <main class="flex-1 border-r border-gray-100 min-h-screen relative overflow-x-hidden md:h-full md:overflow-y-auto md:ml-[280px]">
+      <div class="w-[90%] md:max-w-[720px] mx-auto pt-6 md:pt-10 min-h-screen pb-20 relative z-10">
+        
+        <!-- Mobile Header -->
+        <div class="md:hidden flex items-center justify-between mb-8 px-4 border-b border-gray-100 pb-4">
+          <a href={`${basePath}/`} class="text-xs font-semibold text-gray-500 hover:text-gray-900 transition-colors flex items-center gap-1">
+            <span>←</span> <span>主站</span>
+          </a>
+          <div class="font-serif font-bold text-xl tracking-wide text-gray-900">
+            {sectionMeta.label}
+          </div>
+          <img src={`${basePath}/images/avatar.jpg`} class="w-8 h-8 rounded-full" alt="User" />
+        </div>
+
+        <!-- Section Navigation Bar (Exactly like /english/[section]) -->
+        <MetaphysicsSectionNav activeSection={sectionMeta.slug} counts={counts} totalCount={metaphysicsPosts.length} />
+
+        <!-- Filtered Feed List -->
+        <div class="mt-2 px-4 md:px-0">
+          {filteredPosts.length > 0 ? (
+            filteredPosts.map(post => (
+              <ArticleCard 
+                id={post.slug}
+                title={post.data.title}
+                subtitle={post.data.subtitle}
+                publishedAt={post.data.publishedAt}
+                readTime={post.data.readTime}
+                tags={post.data.tags}
+                thumbnailUrl={post.data.thumbnailUrl}
+              />
+            ))
+          ) : (
+            <div class="py-20 text-center text-gray-500">
+              <p>探索进行中，当前板块尚无文章。</p>
+            </div>
+          )}
+          
+          {filteredPosts.length > 0 && (
+            <div class="py-10 text-center text-gray-500 text-sm">
+              Build this section one useful note at a time.
+            </div>
+          )}
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Unified Metaphysics Right Panel -->
+    <MetaphysicsRightPanel counts={counts} totalCount={metaphysicsPosts.length} />
+  </div>
+</Layout>
