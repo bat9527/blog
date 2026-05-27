@@ -115,18 +115,30 @@ npm run build
   - `base`: '/'
 - **`public/CNAME`**: 内容为 `andywli.cn`
 
-### 部署流程
+### 部署流程 (SOP 规范)
 
-1. 提交代码到 GitHub：
+为了确保部署到线上网站的稳定性，并防止 GitHub Actions 流水线因类型诊断或编译错误意外中断，请严格遵循以下 SOP 流程进行代码变更与推送：
+
+1. **本地验证构建 (核心防错机制)**：
+   在任何推送动作前，必须在本地终端执行一次静态构建测试，确保编译与类型检查 100% 成功：
+   ```bash
+   npm run build
+   ```
+   *注：该脚本会自动先运行 `astro check` 进行严格的 TypeScript/Component 类型诊断，诊断无误后执行静态文件编译打包。若此步报错，切勿强行推送，请修复错误后再试。*
+
+2. **提交代码并推送至 GitHub**：
+   本地构建验证成功后，方可将代码提交并推送：
    ```bash
    git add .
-   git commit -m "update content"
+   git commit -m "feat: 你的具体开发/内容更新说明"
    git push origin main
    ```
 
-2. GitHub Actions 自动触发构建并部署到 GitHub Pages
+3. **GitHub Actions 自动构建与发布**：
+   推送代码后，GitHub Actions 容器会自动触发构建并将静态资源分发部署至 GitHub Pages 容器中。
 
-3. 如遇 404，检查 Repository Settings > Pages > Custom Domain 是否被重置
+4. **异常排查 (404 故障恢复)**：
+   如遇部署完成后线上 `andywli.cn` 报 404 错误，请前往 GitHub 仓库的 **Repository Settings > Pages > Custom Domain** 自定义域名检查是否被 GitHub 意外重置。重新填写并保存 `andywli.cn` 即可恢复正常。
 
 ## 技术栈
 
